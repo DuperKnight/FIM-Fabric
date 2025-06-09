@@ -17,13 +17,13 @@ This repository is the Minecraft part of the project only.
 _IntelliJ is not required in order to use Minecraft-only features of the mod!_
 
 ### Minecraft
-FIM runs on [Fabric](https://fabricmc.net/), and is built to support **latest** versions of Minecraft only.
-
-Download the Fabric Mod from this repository's releases or from [Modrinth]().
+> FIM runs on [Fabric](https://fabricmc.net/), and is built to support **latest** versions of Minecraft only.
+>
+> Download the Fabric Mod from this repository's releases or from [Modrinth]().
 
 ### IntelliJ
-You can find the IntelliJ plugin on the [IntelliJ Plugin Marketplace](), or you can download the jar file directly from the [FIM-IntelliJ repository]().
-
+> You can find the IntelliJ plugin on the [IntelliJ Plugin Marketplace](), or you can download the jar file directly from the [FIM-IntelliJ repository]().
+ 
 **Both the Minecraft Mod & IntelliJ Plugin are free to use for everyone!**
 
 ## ✨ Main Feature List
