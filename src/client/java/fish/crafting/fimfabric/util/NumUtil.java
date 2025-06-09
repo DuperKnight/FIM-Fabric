@@ -1,5 +1,6 @@
 package fish.crafting.fimfabric.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -39,21 +40,22 @@ public class NumUtil {
         return n;
     }
 
-    public static String betterNumber(Number number) {
-        return betterNumber(number, false);
-    }
-
     /**
      * Makes the number look nice
      */
-    public static String betterNumber(Number number, boolean accountForKotlin) {
-        if(!accountForKotlin){
-            return NumberFormat.getInstance(Locale.US).format(number);
-        }
+    public static String betterNumber(Number number) {
+        return NumberFormat.getInstance(Locale.US).format(number);
+    }
 
-        String format = NumberFormat.getInstance(Locale.US).format(number);
-        if(!format.contains(".")) return format + ".0"; //Kotlin yay
-        return format;
+    private static final DecimalFormat FORMAT_JAVA = new DecimalFormat("#.##");
+    private static final DecimalFormat FORMAT_KOTLIN = new DecimalFormat("#.0#");
+
+    public static String toCodeNumber(Number number, boolean kotlin) {
+        if(kotlin){
+            return FORMAT_KOTLIN.format(number).replace(",", ".");
+        }else{
+            return FORMAT_JAVA.format(number).replace(",", ".");
+        }
     }
 
 }

@@ -88,9 +88,9 @@ public class VectorUtils {
     }
 
     public static String toCoordsString(Vec3d vec3d){
-        return NumUtil.betterNumber(vec3d.x, true) + ", "
-                + NumUtil.betterNumber(vec3d.y, true) + ", "
-                + NumUtil.betterNumber(vec3d.z, true);
+        return NumUtil.toCodeNumber(vec3d.x, true) + ", "
+                + NumUtil.toCodeNumber(vec3d.y, true) + ", "
+                + NumUtil.toCodeNumber(vec3d.z, true);
     }
 
     public static String toString(Vec3d vec3d){
