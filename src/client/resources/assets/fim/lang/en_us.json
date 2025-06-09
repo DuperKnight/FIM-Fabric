@@ -1,0 +1,10 @@
+{
+  "fim.keybind.category.intellij": "FIM IntelliJ",
+  "fim.keybind.category.in_game_editor": "FIM Editor",
+
+  "keybind.fim.switch": "Switch to IntelliJ",
+  "keybind.fim.confirm_edit": "Confirm Edit",
+  "keybind.fim.move_tool": "Toggle Move Tool",
+  "keybind.fim.rotate_tool": "Toggle Rotate Tool",
+  "keybind.fim.quick_actions": "Open Quick Actions"
+}

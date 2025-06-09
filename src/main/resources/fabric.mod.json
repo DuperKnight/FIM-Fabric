@@ -3,10 +3,14 @@
   "id": "fim",
   "version": "${version}",
   "name": "Fish's Integrated Minecraft",
-  "description": "",
-  "authors": [],
-  "contact": {},
-  "license": "All-Rights-Reserved",
+  "description": "Adds IntelliJ integration to Minecraft.",
+  "authors": [
+    "ACraftingFish"
+  ],
+  "contact": {
+    "sources": "https://github.com/FishIntegratedMinecraft/FIM-Fabric"
+  },
+  "license": "MIT License",
   "icon": "assets/fim/icon.png",
   "environment": "client",
   "entrypoints": {
