@@ -13,6 +13,9 @@ This repository is the Minecraft part of the project only.
 **NOTE: FIM is currently in an _early alpha_ stage, things are bound to break/change!**
 
 ## 💾 Installation
+
+_IntelliJ is not required in order to use Minecraft-only features of the mod!_
+
 ### Minecraft
 FIM runs on [Fabric](https://fabricmc.net/), and is built to support **latest** versions of Minecraft only.
 
