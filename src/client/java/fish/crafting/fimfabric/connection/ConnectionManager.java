@@ -8,9 +8,7 @@ import fish.crafting.fimfabric.connection.packets.F2IInitPacket;
 import fish.crafting.fimfabric.connection.packets.F2IKeepAlivePacket;
 import fish.crafting.fimfabric.rendering.InformationFeedManager;
 import fish.crafting.fimfabric.util.FocuserUtils;
-import fish.crafting.fimfabric.util.RenderUtils;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;

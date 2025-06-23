@@ -1,21 +1,16 @@
 package fish.crafting.fimfabric.ui.custom.blockactions;
 
-import fish.crafting.fimfabric.rendering.InformationFeedManager;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.actions.UIActionList;
 import fish.crafting.fimfabric.util.ActionUtils;
 import fish.crafting.fimfabric.util.CursorPicking;
-import fish.crafting.fimfabric.util.SoundUtil;
 import fish.crafting.fimfabric.util.VectorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.state.State;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.stream.Collectors;
 
 public class UIBlockActions extends UIActionList {
 

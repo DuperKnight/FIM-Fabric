@@ -3,10 +3,11 @@ package fish.crafting.fimfabric.ui.custom;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
-import fish.crafting.fimfabric.ui.TexRegistry;
-import fish.crafting.fimfabric.ui.UIBaseButton;
 import fish.crafting.fimfabric.ui.UIBox;
-import fish.crafting.fimfabric.util.*;
+import fish.crafting.fimfabric.util.ClickContext;
+import fish.crafting.fimfabric.util.Cursors;
+import fish.crafting.fimfabric.util.NumUtil;
+import fish.crafting.fimfabric.util.SoundUtil;
 import net.minecraft.client.gui.DrawContext;
 
 public class UIToolButton extends UIBox {

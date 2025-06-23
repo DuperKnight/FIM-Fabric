@@ -1,30 +1,24 @@
 package fish.crafting.fimfabric.tools;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import fish.crafting.fimfabric.connection.packets.F2IDoLocationEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
 import fish.crafting.fimfabric.editor.vector.EditorLocation;
 import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
 import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.util.*;
 import fish.crafting.fimfabric.util.render.FadeTracker;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.tick.TickManager;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,16 +142,16 @@ public class MoveTool extends CustomTool<Positioned> {
     }
 
     @Override
-    protected void render(WorldRenderContext context, Positioned obj) {
+    protected void render(RenderContext3D context, Positioned obj) {
         this.lastRendered = obj;
         if(this.startPos == null) {
             this.startPos = obj.getPos();
         }
 
-        Vec3d camera = context.camera().getPos();
+        Vec3d camera = context.camera();
 
         if(MinecraftClient.getInstance().player != null && editingPos){
-            Vec3d rot = MinecraftClient.getInstance().player.getRotationVec(context.tickCounter().getTickDelta(false));
+            Vec3d rot = MinecraftClient.getInstance().player.getRotationVec(context.tickDelta());
 
             if(editingAxis != null){
                 Double coord = getPlaneIntersectionCoordinate(
@@ -185,17 +179,6 @@ public class MoveTool extends CustomTool<Positioned> {
             }
         }
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-
-        MatrixStack matrices = context.matrixStack();
-
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
-        RenderSystem.setShaderColor(1, 1, 1, 1f);
-        RenderSystem.disableCull();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
-
         double zoom = calculateToolZoom(camera, obj);
 
         WorldSelector mainActiveSelector = WorldSelectorManager.get().getMainActiveSelector();
@@ -205,13 +188,11 @@ public class MoveTool extends CustomTool<Positioned> {
         }
 
         for (ToolAxis value : ToolAxis.values()) {
-            VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderLayer.getDebugFilledBox());
-            renderHandle(value, zoom, camera, matrices, vertexConsumer, obj.getPos(), value.color(hoveredAxis));
+            renderHandle(context, value, zoom, obj.getPos(), value.color(hoveredAxis));
         }
 
         for (ToolAxis value : ToolAxis.values()) {
-            VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderLayer.getDebugFilledBox());
-            renderHead(value, zoom, camera, matrices, vertexConsumer, obj.getPos(), value.color(hoveredAxis));
+            renderHead(context, value, zoom, obj.getPos(), value.color(hoveredAxis));
         }
 
         for (ToolAxis value : ToolAxis.values()) {
@@ -230,10 +211,6 @@ public class MoveTool extends CustomTool<Positioned> {
                     origin.z - a.z + u.z);
 
         }
-
-        RenderSystem.enableCull();
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     @Override
@@ -246,19 +223,16 @@ public class MoveTool extends CustomTool<Positioned> {
         return TexRegistry.TOOL_MOVE;
     }
 
-    private void renderHandle(ToolAxis facing,
+    private void renderHandle(RenderContext3D context,
+                              ToolAxis facing,
                               double zoom,
-                              Vec3d camera,
-                              MatrixStack matrices,
-                              VertexConsumer vertexConsumer,
                               Vec3d position,
                               int color){
-        matrices.push();
-        matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+        context.push();
+        context.translateCamera();
 
         int angles = 9;
         double rotate = Math.TAU / (angles);
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         Vec3d unit = facing.unit;
 
         double x = unit.x * handlePartWidth * zoom;
@@ -283,48 +257,36 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos1 = Math.cos(ang1);
             double cos2 = Math.cos(ang2);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin2 + z * sin2 + xLen),
+            context.vertex((float) (anchorX + y * sin2 + z * sin2 + xLen),
                             (float) (anchorY + x * sin2 + z * cos2 + yLen),
-                            (float) (anchorZ + x * cos2 + y * cos2 + zLen))
-                    .color(color);
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin1 + z * sin1),
+                            (float) (anchorZ + x * cos2 + y * cos2 + zLen), color);
+
+            context.vertex((float) (anchorX + y * sin1 + z * sin1),
                             (float) (anchorY + x * sin1 + z * cos1),
-                            (float) (anchorZ + x * cos1 + y * cos1))
-                    .color(color);
+                            (float) (anchorZ + x * cos1 + y * cos1), color);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin2 + z * sin2),
+            context.vertex((float) (anchorX + y * sin2 + z * sin2),
                             (float) (anchorY + x * sin2 + z * cos2),
-                            (float) (anchorZ + x * cos2 + y * cos2))
-                    .color(color);
+                            (float) (anchorZ + x * cos2 + y * cos2), color);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin1 + z * sin1 + xLen),
+            context.vertex((float) (anchorX + y * sin1 + z * sin1 + xLen),
                             (float) (anchorY + x * sin1 + z * cos1 + yLen),
-                            (float) (anchorZ + x * cos1 + y * cos1 + zLen))
-                    .color(color);
-
-
+                            (float) (anchorZ + x * cos1 + y * cos1 + zLen), color);
         }
 
-        matrices.pop();
+        context.pop();
     }
 
-    private void renderHead(ToolAxis facing,
+    private void renderHead(RenderContext3D context,
+                            ToolAxis facing,
                             double zoom,
-                            Vec3d camera,
-                            MatrixStack matrices,
-                            VertexConsumer vertexConsumer,
                             Vec3d position,
                             int color){
-        matrices.push();
-        matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+        context.push();
+        context.translateCamera();
 
         int angles = 36;
         double rotate = Math.TAU / (angles);
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         Vec3d unit = facing.unit;
 
         double x = unit.x * headPartWidth * zoom;
@@ -351,23 +313,17 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos1 = Math.cos(ang1);
             double cos2 = Math.cos(ang2);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + firstAnglePos.x),
+            context.vertex( (float) (anchorX + firstAnglePos.x),
                             (float) (anchorY + firstAnglePos.y),
-                            (float) (anchorZ + firstAnglePos.z))
-                    .color(color);
+                            (float) (anchorZ + firstAnglePos.z), color);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin2 + z * sin2),
+            context.vertex( (float) (anchorX + y * sin2 + z * sin2),
                             (float) (anchorY + x * sin2 + z * cos2),
-                            (float) (anchorZ + x * cos2 + y * cos2))
-                    .color(color);
+                            (float) (anchorZ + x * cos2 + y * cos2), color);
 
-            vertexConsumer.vertex(matrix4f,
-                            (float) (anchorX + y * sin1 + z * sin1),
+            context.vertex( (float) (anchorX + y * sin1 + z * sin1),
                             (float) (anchorY + x * sin1 + z * cos1),
-                            (float) (anchorZ + x * cos1 + y * cos1))
-                    .color(color);
+                            (float) (anchorZ + x * cos1 + y * cos1), color);
         }
 
         for (int i = 0; i < angles; i++) {
@@ -381,64 +337,49 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos2 = Math.cos(ang2);
 
             if(facing == ToolAxis.Z) {
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + unit.x * headPartLength * zoom),
+                context.vertex((float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
-                                (float) (anchorZ + unit.z * headPartLength * zoom))
-                        .color(color);
+                                (float) (anchorZ + unit.z * headPartLength * zoom), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + y * sin2 + z * sin2),
+                context.vertex((float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
-                                (float) (anchorZ + x * cos2 + y * cos2))
-                        .color(color);
+                                (float) (anchorZ + x * cos2 + y * cos2), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + y * sin1 + z * sin1),
+                context.vertex((float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
-                                (float) (anchorZ + x * cos1 + y * cos1))
-                        .color(color);
+                                (float) (anchorZ + x * cos1 + y * cos1), color);
             }else if(facing == ToolAxis.Y){
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + y * sin1 + z * sin1),
+                context.vertex((float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
-                                (float) (anchorZ + x * cos1 + y * cos1))
-                        .color(color);
+                                (float) (anchorZ + x * cos1 + y * cos1), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + y * sin2 + z * sin2),
+                context.vertex((float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
-                                (float) (anchorZ + x * cos2 + y * cos2))
-                        .color(color);
+                                (float) (anchorZ + x * cos2 + y * cos2), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (anchorX + unit.x * headPartLength * zoom),
+                context.vertex((float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
-                                (float) (anchorZ + unit.z * headPartLength * zoom))
-                        .color(color);
+                                (float) (anchorZ + unit.z * headPartLength * zoom), color);
             }else{
-                vertexConsumer.vertex(matrix4f,
+                context.vertex(
                                 (float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
-                                (float) (anchorZ + unit.z * headPartLength * zoom))
-                        .color(color);
-                vertexConsumer.vertex(matrix4f,
+                                (float) (anchorZ + unit.z * headPartLength * zoom), color);
+                context.vertex(
                                 (float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
-                                (float) (anchorZ + x * cos1 + y * cos1))
-                        .color(color);
+                                (float) (anchorZ + x * cos1 + y * cos1), color);
 
-                vertexConsumer.vertex(matrix4f,
+                context.vertex(
                                 (float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
-                                (float) (anchorZ + x * cos2 + y * cos2))
-                        .color(color);
+                                (float) (anchorZ + x * cos2 + y * cos2), color);
 
             }
 
         }
 
-        matrices.pop();
+        context.pop();
     }
 
     /**

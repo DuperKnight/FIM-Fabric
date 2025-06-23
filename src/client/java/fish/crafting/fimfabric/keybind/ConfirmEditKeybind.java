@@ -1,6 +1,5 @@
 package fish.crafting.fimfabric.keybind;
 
-import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.tools.ToolManager;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;

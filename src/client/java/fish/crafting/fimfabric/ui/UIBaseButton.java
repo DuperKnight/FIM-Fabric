@@ -1,7 +1,6 @@
 package fish.crafting.fimfabric.ui;
 
 import fish.crafting.fimfabric.util.ColorUtil;
-import net.minecraft.client.gui.DrawContext;
 
 import static fish.crafting.fimfabric.util.Constants.ELEMENT_ALPHA;
 

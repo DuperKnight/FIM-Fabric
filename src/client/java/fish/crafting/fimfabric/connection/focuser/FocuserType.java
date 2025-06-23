@@ -1,9 +1,7 @@
 package fish.crafting.fimfabric.connection.focuser;
 
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import org.apache.commons.lang3.SystemUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 

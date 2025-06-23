@@ -1,8 +1,6 @@
 package fish.crafting.fimfabric.ui.actions;
 
 import fish.crafting.fimfabric.ui.FancyText;
-import fish.crafting.fimfabric.ui.actions.ActionElement;
-import fish.crafting.fimfabric.ui.actions.UIActionList;
 import fish.crafting.fimfabric.util.ClickContext;
 
 public abstract class ExpandActionElement extends ActionElement {

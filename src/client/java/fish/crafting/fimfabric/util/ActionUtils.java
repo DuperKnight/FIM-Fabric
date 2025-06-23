@@ -2,7 +2,6 @@ package fish.crafting.fimfabric.util;
 
 import fish.crafting.fimfabric.rendering.InformationFeedManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 
 import java.util.function.Supplier;
 

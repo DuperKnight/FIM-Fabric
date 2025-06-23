@@ -1,10 +1,9 @@
 package fish.crafting.fimfabric.tools;
 
 import fish.crafting.fimfabric.client.FIMModClient;
+import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.util.Constants;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
@@ -22,11 +21,11 @@ public abstract class CustomTool<T extends Positioned> {
 
     }
 
-    public final void handleRender(WorldRenderContext context, Positioned obj){
+    public final void handleRender(RenderContext3D context, Positioned obj){
         render(context, (T) obj); //Oh well;
     }
 
-    protected abstract void render(WorldRenderContext context, T obj);
+    protected abstract void render(RenderContext3D context, T obj);
 
     public abstract boolean isAccessibleFor(Object object);
     public abstract Identifier getTexture();

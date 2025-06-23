@@ -1,23 +1,20 @@
 package fish.crafting.fimfabric.tools.worldselector;
 
-import fish.crafting.fimfabric.editor.vector.EditorLocation;
-import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
-import fish.crafting.fimfabric.util.RenderUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexRendering;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import static fish.crafting.fimfabric.util.DebugSettings.RENDER_SELECTOR_HITBOXES;
 
@@ -93,16 +90,14 @@ public class WorldSelectorManager {
         this.hovered = hovered;
     }
 
-    public void renderSelectors(@NotNull WorldRenderContext context, MatrixStack matrices, Vec3d camera){
-        matrices.push();
-        matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+    public void renderSelectors(@NotNull RenderContext3D context){
+        context.push();
+        context.translateCamera();
 
-        VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderUtils.LINE_WIDTH_4);
+        context.setLineWidth(4f);
 
         for (var selector : activeSelectors) {
-            VertexRendering.drawBox(
-                    matrices,
-                    vertexConsumer,
+            context.renderBoxOutline(
                     selector.getBox(),
                     1,
                     1,
@@ -111,7 +106,7 @@ public class WorldSelectorManager {
             );
         }
 
-        matrices.pop();
+        context.pop();
     }
 
     public void updateSelectors() {

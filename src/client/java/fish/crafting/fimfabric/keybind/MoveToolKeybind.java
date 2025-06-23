@@ -3,7 +3,6 @@ package fish.crafting.fimfabric.keybind;
 import fish.crafting.fimfabric.tools.EditorTools;
 import fish.crafting.fimfabric.tools.ToolManager;
 import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
 
 public class MoveToolKeybind extends CustomKeybind{
 

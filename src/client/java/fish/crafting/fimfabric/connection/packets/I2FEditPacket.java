@@ -1,15 +1,12 @@
 package fish.crafting.fimfabric.connection.packets;
 
-import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.connection.packetsystem.InPacket;
-import fish.crafting.fimfabric.rendering.InformationFeedManager;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.EditorTools;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.util.ConnectionUtils;
 import io.netty.buffer.ByteBufInputStream;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class I2FEditPacket implements InPacket {

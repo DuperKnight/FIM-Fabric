@@ -4,7 +4,6 @@ import fish.crafting.fimfabric.connection.packetsystem.InPacket;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.server.integrated.IntegratedServer;
 
 import java.io.IOException;
 

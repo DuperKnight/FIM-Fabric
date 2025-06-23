@@ -1,10 +1,10 @@
 package fish.crafting.fimfabric.tools;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import fish.crafting.fimfabric.connection.packets.F2IDoLocationEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
 import fish.crafting.fimfabric.editor.vector.EditorLocation;
 import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
 import fish.crafting.fimfabric.tools.worldselector.CircularSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
@@ -12,21 +12,16 @@ import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
 import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.util.*;
 import fish.crafting.fimfabric.util.render.FadeTracker;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +37,6 @@ public class RotateTool extends CustomTool<PosRotated> {
     private final double lineWidth = 0.01;
 
     private boolean editing = false;
-
-    //Offset from the center of the vector, used so that axis-selecting won't snap
-    private Double editingAngleOffset = null;
 
     private ToolAxis editingAxis = null;
     private Pair<Float, Float> startRot = null;
@@ -155,7 +147,7 @@ public class RotateTool extends CustomTool<PosRotated> {
     }
 
     @Override
-    protected void render(WorldRenderContext context, PosRotated obj) {
+    protected void render(RenderContext3D context, PosRotated obj) {
         this.lastRendered = obj;
         if(this.startRot == null) {
             this.startRot = new Pair<>(obj.pitch(), obj.yaw());
@@ -165,7 +157,7 @@ public class RotateTool extends CustomTool<PosRotated> {
             this.startRotDir = VectorUtils.getDirection(obj.pitch(), obj.yaw());
         }
 
-        Vec3d camera = context.camera().getPos();
+        Vec3d camera = context.camera();
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if(player != null && editing){
@@ -196,16 +188,6 @@ public class RotateTool extends CustomTool<PosRotated> {
             }
         }
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.LINES);
-
-        MatrixStack matrices = context.matrixStack();
-
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_LINES);
-        RenderSystem.setShaderColor(1, 1, 1, 1f);
-        RenderSystem.disableCull();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         double zoom = calculateToolZoom(camera, obj);
 
@@ -216,7 +198,6 @@ public class RotateTool extends CustomTool<PosRotated> {
         }
 
         for (ToolAxis value : ROT_AXIS) {
-            VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderLayer.getDebugFilledBox());
             float rotateDeg;
             if(value == ToolAxis.Y){
                 rotateDeg = (float) Math.toRadians(-obj.yaw());
@@ -224,19 +205,17 @@ public class RotateTool extends CustomTool<PosRotated> {
                 rotateDeg = (float) Math.toRadians(-obj.pitch());
             }
 
-            renderAxis(value, zoom, camera, matrices, vertexConsumer, obj.getPos(), value.color(hoveredAxis), rotateDeg);
+            renderAxis(context, value, zoom, obj.getPos(), value.color(hoveredAxis), rotateDeg);
         }
 
         Vec3d pos = obj.getPos();
         if(editing && startRotDir != null){
-            VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderUtils.LINE_WIDTH_8);
+            context.setLineWidth(8f);
 
-            matrices.push();
-            matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+            context.push();
+            context.translateCamera();
 
-            RenderUtils.renderLine(
-                    vertexConsumer,
-                    matrices.peek(),
+            context.renderLine(
                     (float) pos.x,
                     (float) pos.y,
                     (float) pos.z,
@@ -246,7 +225,7 @@ public class RotateTool extends CustomTool<PosRotated> {
                     255, 255, 255
             );
 
-            matrices.pop();
+            context.pop();
         }
 
         for (ToolAxis value : ROT_AXIS) {
@@ -269,10 +248,6 @@ public class RotateTool extends CustomTool<PosRotated> {
                     pos.z - z);
 
         }
-
-        RenderSystem.enableCull();
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     @Override
@@ -285,16 +260,14 @@ public class RotateTool extends CustomTool<PosRotated> {
         return TexRegistry.TOOL_ROTATE;
     }
 
-    private void renderAxis(ToolAxis facing,
+    private void renderAxis(RenderContext3D context,
+                            ToolAxis facing,
                             double zoom,
-                            Vec3d camera,
-                            MatrixStack matrices,
-                            VertexConsumer vertexConsumer,
                             Vec3d position,
                             int color,
                             float rotateDeg){
-        matrices.push();
-        matrices.translate(-camera.getX(), -camera.getY(), -camera.getZ());
+        context.push();
+        context.translateCamera();
 
         int bigCircleAngles = 60;
         double bigRotate = Math.TAU / bigCircleAngles;
@@ -302,7 +275,6 @@ public class RotateTool extends CustomTool<PosRotated> {
         int smallCircleAngles = 4;
         double smallRotate = Math.TAU / smallCircleAngles;
 
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         Vec3d unit = facing.unit;
 
         double zoomedDistanceFromCenter = distanceFromCenter * zoom;
@@ -368,35 +340,26 @@ public class RotateTool extends CustomTool<PosRotated> {
                     pos3 = t;
                 }
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (pos1.x + position.x),
+                context.vertex((float) (pos1.x + position.x),
                                 (float) (pos1.y + position.y),
-                                (float) (pos1.z + position.z))
-                        .color(color);
+                                (float) (pos1.z + position.z), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (pos2.x + position.x),
+                context.vertex((float) (pos2.x + position.x),
                                 (float) (pos2.y + position.y),
-                                (float) (pos2.z + position.z))
-                        .color(color);
+                                (float) (pos2.z + position.z), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (pos3.x + position.x),
+                context.vertex((float) (pos3.x + position.x),
                                 (float) (pos3.y + position.y),
-                                (float) (pos3.z + position.z))
-                        .color(color);
+                                (float) (pos3.z + position.z), color);
 
-                vertexConsumer.vertex(matrix4f,
-                                (float) (pos4.x + position.x),
+                context.vertex((float) (pos4.x + position.x),
                                 (float) (pos4.y + position.y),
-                                (float) (pos4.z + position.z))
-                        .color(color);
-
+                                (float) (pos4.z + position.z), color);
 
             }
         }
 
-        matrices.pop();
+        context.pop();
     }
 
     private Vec3d getPlaneIntersectionPoint(Positioned positioned,

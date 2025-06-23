@@ -1,23 +1,16 @@
 package fish.crafting.fimfabric.util;
 
+import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.util.cache.RenderFrameCache;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.render.Camera;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 public class CursorPicking {
 
@@ -43,24 +36,21 @@ public class CursorPicking {
         vec1 = camera.getPos();
     }
 
-    public static void renderPickedPos(@NotNull WorldRenderContext context,
-                                       @NotNull MatrixStack matrices,
-                                       @NotNull Vec3d camera,
+    public static void renderPickedPos(@NotNull RenderContext3D context,
                                        BlockPos pos, float r, float g, float b, float a){
         renderPickedPos(
-                context, matrices, camera,
+                context,
                 pos.getX(), pos.getY(), pos.getZ(),
                 pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1,
                 r, g, b, a);
     }
 
-    public static void renderPickedPos(@NotNull WorldRenderContext context,
-                                       @NotNull MatrixStack matrices,
-                                       @NotNull Vec3d camera,
+    public static void renderPickedPos(@NotNull RenderContext3D context,
                                        double x, double y, double z,
                                        double x2, double y2, double z2, float r, float g, float b, float a){
-        matrices.push();
-        matrices.translate(-camera.x, -camera.y, -camera.z);
+        context.push();
+        context.translateCamera();
+        context.setLineWidth(2f);
 
         //To prevent z-fighting, we enlarge the box very slightly.
         double offset = 0.001;
@@ -72,25 +62,19 @@ public class CursorPicking {
         x -= dX; y -= dY; z -= dZ;
         x2 += dX; y2 += dY; z += dZ;
 
-        var vertexConsumer = context.consumers().getBuffer(RenderUtils.LINE_WIDTH_2);
-        VertexRendering.drawBox(
-                matrices,
-                vertexConsumer,
+        context.renderBoxOutline(
                 x, y, z,
                 x2, y2, z2,
                 r, g, b, a
         );
 
-        vertexConsumer = context.consumers().getBuffer(RenderLayer.getDebugFilledBox());
-        VertexRendering.drawFilledBox(
-                matrices,
-                vertexConsumer,
+        context.renderFilledBox(
                 x, y, z,
                 x2, y2, z2,
                 r, g, b, 0.5f * a
         );
 
-        matrices.pop();
+        context.pop();
     }
 
     public static boolean areBlockPickingPrerequisitesMet(){

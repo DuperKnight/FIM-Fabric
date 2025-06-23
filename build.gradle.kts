@@ -152,7 +152,6 @@ tasks {
         File("${project.rootDir}/jars").mkdir()
         from(remapJar.get().archiveFile)
         into("${project.rootDir}/jars")
-        delete("${project.rootDir}/versions/{$archives_base_name}/build/preprocessed")
     }
     clean { delete("${project.rootDir}/jars") }
 }

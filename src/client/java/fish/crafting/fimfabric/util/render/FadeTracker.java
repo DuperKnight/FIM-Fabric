@@ -1,7 +1,6 @@
 package fish.crafting.fimfabric.util.render;
 
 import fish.crafting.fimfabric.util.ColorUtil;
-import fish.crafting.fimfabric.util.NumUtil;
 
 public class FadeTracker {
 

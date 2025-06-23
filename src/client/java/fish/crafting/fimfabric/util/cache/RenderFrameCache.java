@@ -1,7 +1,6 @@
 package fish.crafting.fimfabric.util.cache;
 
 import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;
 import java.util.function.Supplier;

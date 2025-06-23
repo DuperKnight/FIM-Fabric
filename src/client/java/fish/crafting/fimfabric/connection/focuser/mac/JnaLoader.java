@@ -2,9 +2,6 @@ package fish.crafting.fimfabric.connection.focuser.mac;
 
 import com.sun.jna.Native;
 import fish.crafting.fimfabric.connection.focuser.FocuserType;
-import fish.crafting.fimfabric.util.FocuserUtils;
-import org.apache.logging.log4j.core.Logger;
-import org.jetbrains.annotations.NotNull;
 
 
 public final class JnaLoader {

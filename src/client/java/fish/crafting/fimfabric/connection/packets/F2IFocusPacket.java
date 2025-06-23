@@ -1,7 +1,5 @@
 package fish.crafting.fimfabric.connection.packets;
 
-import fish.crafting.fimfabric.connection.ConnectionConstants;
-import fish.crafting.fimfabric.connection.focuser.FocuserType;
 import fish.crafting.fimfabric.connection.packetsystem.OutPacket;
 import fish.crafting.fimfabric.connection.packetsystem.PacketId;
 import io.netty.buffer.ByteBufOutputStream;

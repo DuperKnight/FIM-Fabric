@@ -1,6 +1,5 @@
 package fish.crafting.fimfabric.ui;
 
-import com.mojang.datafixers.kinds.Const;
 import fish.crafting.fimfabric.util.ColorUtil;
 import fish.crafting.fimfabric.util.Constants;
 import net.minecraft.client.gui.DrawContext;

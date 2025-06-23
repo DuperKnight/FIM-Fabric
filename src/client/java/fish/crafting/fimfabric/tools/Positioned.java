@@ -1,7 +1,6 @@
 package fish.crafting.fimfabric.tools;
 
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
-import fish.crafting.fimfabric.util.NumUtil;
 import net.minecraft.util.math.Vec3d;
 
 public interface Positioned {

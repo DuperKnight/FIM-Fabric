@@ -3,20 +3,12 @@ package fish.crafting.fimfabric.rendering;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.ui.InterfaceManager;
-import fish.crafting.fimfabric.ui.UIComponent;
-import fish.crafting.fimfabric.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 
 public class RenderingManager {
 

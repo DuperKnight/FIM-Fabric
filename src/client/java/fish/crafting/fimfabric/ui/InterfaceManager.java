@@ -1,13 +1,11 @@
 package fish.crafting.fimfabric.ui;
 
-import fish.crafting.fimfabric.rendering.InformationFeedManager;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.EditorTools;
 import fish.crafting.fimfabric.ui.actions.UIActionList;
 import fish.crafting.fimfabric.ui.custom.UILanguageSwitcher;
 import fish.crafting.fimfabric.ui.custom.UIToolButton;
 import fish.crafting.fimfabric.ui.custom.blockactions.UIBlockActions;
-import fish.crafting.fimfabric.ui.custom.mainscreen.UIMainActionButton;
 import fish.crafting.fimfabric.ui.custom.quickactions.UIQuickActions;
 import fish.crafting.fimfabric.ui.scroll.Scroller;
 import fish.crafting.fimfabric.ui.scroll.UIScrollable;

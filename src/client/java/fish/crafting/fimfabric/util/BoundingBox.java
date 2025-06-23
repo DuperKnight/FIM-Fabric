@@ -1,6 +1,5 @@
 package fish.crafting.fimfabric.util;
 
-import fish.crafting.fimfabric.connection.packetsystem.PacketId;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 

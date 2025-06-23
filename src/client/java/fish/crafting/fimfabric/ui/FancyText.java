@@ -1,7 +1,5 @@
 package fish.crafting.fimfabric.ui;
 
-import fish.crafting.fimfabric.ui.actions.ActionElement;
-import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

@@ -3,7 +3,6 @@ package fish.crafting.fimfabric.connection.packets;
 import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.connection.packetsystem.InPacket;
 import fish.crafting.fimfabric.rendering.InformationFeedManager;
-import fish.crafting.fimfabric.util.FocuserUtils;
 import io.netty.buffer.ByteBufInputStream;
 
 import java.io.IOException;

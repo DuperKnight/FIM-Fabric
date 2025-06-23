@@ -1,18 +1,14 @@
 package fish.crafting.fimfabric.connection.focuser.mac;
 
 import com.sun.jna.*;
-import com.sun.jna.ptr.PointerByReference;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.io.File;
 import java.lang.reflect.Proxy;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.List;
+import java.util.Collections;
 
 public final @NonNls class Foundation {
     private static final FoundationLibrary myFoundationLibrary;
