@@ -1,14 +1,11 @@
+import com.replaymod.gradle.preprocess.PreprocessTask
+
 plugins {
     java
-    id("fabric-loom") version "1.10-SNAPSHOT"
     alias(libs.plugins.blossom)
     alias(libs.plugins.shadow)
+    id("fabric-loom") version "1.10-SNAPSHOT"
     id(libs.plugins.preprocessor.get().pluginId)
-}
-
-buildscript {
-    // Set loom to the correct platform
-    project.extra.set("loom.platform", project.name.substringAfter("-"))
 }
 
 val modPlatform = Platform.of(project)
@@ -16,14 +13,20 @@ val modPlatform = Platform.of(project)
 val mod_version: String by project
 val maven_group: String by project
 val minecraft_version: String by project
-val yarn_mappings: String by project
 val loader_version: String by project
-val fabric_version: String by project
 
 val mod_name = "Fish's Integrated Minecraft"
 
 version = mod_version
 group = maven_group
+
+val targetJavaVersion = 21
+
+blossom {
+    replaceToken("@NAME@", mod_name)
+    replaceToken("@ID@", "fim")
+    replaceToken("@VERSION@", mod_version)
+}
 
 preprocess {
     vars.put("MC", modPlatform.mcVersion)
@@ -31,13 +34,34 @@ preprocess {
     vars.put("FORGE", if (modPlatform.isForge) 1 else 0)
     vars.put("NEOFORGE", if (modPlatform.isNeoForge) 1 else 0)
     vars.put("FORGELIKE", if (modPlatform.isForgeLike) 1 else 0)
+
+    keywords.set(mapOf(
+        ".java" to PreprocessTask.DEFAULT_KEYWORDS
+    ))
 }
 
-sourceSets.forEach {
-    val dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.setResourcesDir(dir)
-    it.java.destinationDirectory = dir
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        create("fim") {
+            sourceSet(sourceSets.main.get())
+            sourceSet(sourceSets.getByName("client"))
+        }
+    }
 }
+
+java {
+    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+    }
+
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    //withSourcesJar()
+}
+
 
 fabricApi {
     configureDataGeneration {
@@ -50,12 +74,24 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${minecraft_version}")
+    /*minecraft("com.mojang:minecraft:${minecraft_version}")
     mappings("net.fabricmc:yarn:${yarn_mappings}:v2")
     modImplementation("net.fabricmc:fabric-loader:${loader_version}")
 
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")*/
 
+    minecraft("com.mojang:minecraft:${modPlatform.mcVersionStr}")
+
+    val (yarnVersion, fabricVersion) = when (modPlatform.mcVersion) {
+        12104 -> "1.21.4+build.8" to "0.119.2+1.21.4"
+        12105 -> "1.21.5+build.1" to "0.128.0+1.21.5"
+        else -> error("No mappings defined for ${modPlatform.mcVersion}")
+    }
+
+    mappings("net.fabricmc:yarn:${yarnVersion}:v2")
+
+    modImplementation("net.fabricmc:fabric-loader:${loader_version}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
 
     compileOnly("org.projectlombok:lombok:1.18.32")
     annotationProcessor("org.projectlombok:lombok:1.18.32")
@@ -67,6 +103,7 @@ dependencies {
 // First value is start of range, second value is end of range or null to leave the range open
 val supportedVersionRange: Pair<String, String?> = when (modPlatform.mcVersion) {
     12104 -> "1.21.4" to "1.21.4"
+    12105 -> "1.21.5" to "1.21.5"
     else -> error("Undefined version range for ${modPlatform.mcVersion}")
 }
 
@@ -84,7 +121,8 @@ val shade: Configuration by configurations.creating {
     configurations.implementation.get().extendsFrom(this)
 }
 
-base.archivesName = "$mod_name ($prettyVersionRange-${modPlatform.loaderStr})"
+val archives_base_name: String by project
+base.archivesName = "$archives_base_name ($prettyVersionRange)"
 
 tasks {
     processResources {
@@ -93,10 +131,12 @@ tasks {
             "minecraft_version" to minecraft_version,
             "loader_version" to loader_version
         )
-        inputs.properties(properties)
+
         filesMatching(listOf("fabric.mod.json", "META-INF/mods.toml")) {
             expand(properties)
         }
+
+        inputs.properties(properties)
         exclude("META-INF/mods.toml", "pack.mcmeta")
     }
     shadowJar {
@@ -104,42 +144,18 @@ tasks {
         configurations = listOf(shade)
     }
     remapJar {
-        input.set(shadowJar.get().archiveFile)
-        archiveClassifier.set("")
+        //input.set(shadowJar.get().archiveFile)
+        //archiveClassifier.set("")
         finalizedBy("copyJar")
     }
     register<Copy>("copyJar") {
         File("${project.rootDir}/jars").mkdir()
         from(remapJar.get().archiveFile)
         into("${project.rootDir}/jars")
+        delete("${project.rootDir}/versions/{$archives_base_name}/build/preprocessed")
     }
     clean { delete("${project.rootDir}/jars") }
 }
-
-
-/*def targetJavaVersion = 21
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
-    }
-}
-
-
-
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
-}*/
 
 data class Platform(
     val mcMajor: Int,

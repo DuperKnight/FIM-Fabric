@@ -22,13 +22,8 @@ public class GenericTickListener implements ClientTickEvents.EndTick {
         WorldSelectorManager.get().updateSelectors();
         ConnectionManager.get().tick();
 
-        /*
-        Positioned editing = ToolManager.get().getEditing();
-        if(editing == null) {
-            ToolManager.get().setEditing(new EditorLocation(100.0, 100.0, 100.0, 1.0f, 1.0f, ""));
-        }
-        */
-
-
+        //#if MC>=12105
+        //$$ InformationFeedManager.success("ha", false);
+        //#endif
     }
 }
