@@ -41,6 +41,13 @@ preprocess {
 }
 
 loom {
+    runs {
+        named("client") {
+            ideConfigGenerated(true)
+            runDir("../../run") //This makes every version run in the same place
+        }
+    }
+
     splitEnvironmentSourceSets()
     mods {
         create("fim") {
