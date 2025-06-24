@@ -231,6 +231,8 @@ public class MoveTool extends CustomTool<Positioned> {
         context.push();
         context.translateCamera();
 
+        RenderContext3D.VertexHelper vertexHelper = context.renderVertices();
+
         int angles = 9;
         double rotate = Math.TAU / (angles);
         Vec3d unit = facing.unit;
@@ -257,19 +259,19 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos1 = Math.cos(ang1);
             double cos2 = Math.cos(ang2);
 
-            context.vertex((float) (anchorX + y * sin2 + z * sin2 + xLen),
+            vertexHelper.vertex((float) (anchorX + y * sin2 + z * sin2 + xLen),
                             (float) (anchorY + x * sin2 + z * cos2 + yLen),
                             (float) (anchorZ + x * cos2 + y * cos2 + zLen), color);
 
-            context.vertex((float) (anchorX + y * sin1 + z * sin1),
+            vertexHelper.vertex((float) (anchorX + y * sin1 + z * sin1),
                             (float) (anchorY + x * sin1 + z * cos1),
                             (float) (anchorZ + x * cos1 + y * cos1), color);
 
-            context.vertex((float) (anchorX + y * sin2 + z * sin2),
+            vertexHelper.vertex((float) (anchorX + y * sin2 + z * sin2),
                             (float) (anchorY + x * sin2 + z * cos2),
                             (float) (anchorZ + x * cos2 + y * cos2), color);
 
-            context.vertex((float) (anchorX + y * sin1 + z * sin1 + xLen),
+            vertexHelper.vertex((float) (anchorX + y * sin1 + z * sin1 + xLen),
                             (float) (anchorY + x * sin1 + z * cos1 + yLen),
                             (float) (anchorZ + x * cos1 + y * cos1 + zLen), color);
         }
@@ -284,6 +286,8 @@ public class MoveTool extends CustomTool<Positioned> {
                             int color){
         context.push();
         context.translateCamera();
+
+        RenderContext3D.VertexHelper vertexHelper = context.renderVertices();
 
         int angles = 36;
         double rotate = Math.TAU / (angles);
@@ -313,15 +317,15 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos1 = Math.cos(ang1);
             double cos2 = Math.cos(ang2);
 
-            context.vertex( (float) (anchorX + firstAnglePos.x),
+            vertexHelper.vertex( (float) (anchorX + firstAnglePos.x),
                             (float) (anchorY + firstAnglePos.y),
                             (float) (anchorZ + firstAnglePos.z), color);
 
-            context.vertex( (float) (anchorX + y * sin2 + z * sin2),
+            vertexHelper.vertex( (float) (anchorX + y * sin2 + z * sin2),
                             (float) (anchorY + x * sin2 + z * cos2),
                             (float) (anchorZ + x * cos2 + y * cos2), color);
 
-            context.vertex( (float) (anchorX + y * sin1 + z * sin1),
+            vertexHelper.vertex( (float) (anchorX + y * sin1 + z * sin1),
                             (float) (anchorY + x * sin1 + z * cos1),
                             (float) (anchorZ + x * cos1 + y * cos1), color);
         }
@@ -337,40 +341,40 @@ public class MoveTool extends CustomTool<Positioned> {
             double cos2 = Math.cos(ang2);
 
             if(facing == ToolAxis.Z) {
-                context.vertex((float) (anchorX + unit.x * headPartLength * zoom),
+                vertexHelper.vertex((float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
                                 (float) (anchorZ + unit.z * headPartLength * zoom), color);
 
-                context.vertex((float) (anchorX + y * sin2 + z * sin2),
+                vertexHelper.vertex((float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
                                 (float) (anchorZ + x * cos2 + y * cos2), color);
 
-                context.vertex((float) (anchorX + y * sin1 + z * sin1),
+                vertexHelper.vertex((float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
                                 (float) (anchorZ + x * cos1 + y * cos1), color);
             }else if(facing == ToolAxis.Y){
-                context.vertex((float) (anchorX + y * sin1 + z * sin1),
+                vertexHelper.vertex((float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
                                 (float) (anchorZ + x * cos1 + y * cos1), color);
 
-                context.vertex((float) (anchorX + y * sin2 + z * sin2),
+                vertexHelper.vertex((float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
                                 (float) (anchorZ + x * cos2 + y * cos2), color);
 
-                context.vertex((float) (anchorX + unit.x * headPartLength * zoom),
+                vertexHelper.vertex((float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
                                 (float) (anchorZ + unit.z * headPartLength * zoom), color);
             }else{
-                context.vertex(
+                vertexHelper.vertex(
                                 (float) (anchorX + unit.x * headPartLength * zoom),
                                 (float) (anchorY + unit.y * headPartLength * zoom),
                                 (float) (anchorZ + unit.z * headPartLength * zoom), color);
-                context.vertex(
+                vertexHelper.vertex(
                                 (float) (anchorX + y * sin1 + z * sin1),
                                 (float) (anchorY + x * sin1 + z * cos1),
                                 (float) (anchorZ + x * cos1 + y * cos1), color);
 
-                context.vertex(
+                vertexHelper.vertex(
                                 (float) (anchorX + y * sin2 + z * sin2),
                                 (float) (anchorY + x * sin2 + z * cos2),
                                 (float) (anchorZ + x * cos2 + y * cos2), color);

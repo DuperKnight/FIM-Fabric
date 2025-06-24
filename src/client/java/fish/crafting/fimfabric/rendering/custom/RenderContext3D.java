@@ -56,10 +56,14 @@ public interface RenderContext3D {
         translate(-vec3d.x, -vec3d.y, -vec3d.z);
     }
 
-    void vertex(float x, float y, float z, int rgb);
-
     void push();
     void pop();
 
     float tickDelta();
+
+    VertexHelper renderVertices();
+
+    interface VertexHelper {
+        void vertex(float x, float y, float z, int color);
+    }
 }

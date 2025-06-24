@@ -13,12 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
-    //#if MC==12104
-    //$$ @Inject(method = "render", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4fStack;popMatrix()Lorg/joml/Matrix4fStack;"))
-    //$$ public void render(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
-    //$$      //Make sure this is ALWAYS getting called on EACH RENDER!!
-    //$$     RenderingManager.get().renderOverlay(tickCounter, drawContext);
-    //$$ }
-    //#endif
-
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4fStack;popMatrix()Lorg/joml/Matrix4fStack;"))
+    public void render(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
+        //Make sure this is ALWAYS getting called on EACH RENDER!!
+        RenderingManager.get().renderOverlay(tickCounter, drawContext);
+    }
 }

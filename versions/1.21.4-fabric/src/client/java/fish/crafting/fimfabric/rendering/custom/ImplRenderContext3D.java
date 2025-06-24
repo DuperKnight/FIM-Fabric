@@ -1,16 +1,10 @@
 package fish.crafting.fimfabric.rendering.custom;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -19,33 +13,10 @@ import java.util.OptionalDouble;
 
 import static net.minecraft.client.render.RenderPhase.*;
 
-//1.21.5
+//1.21.4
 public class ImplRenderContext3D implements RenderContext3D {
 
-    private static final RenderPipeline PIPELINE_LINES = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.RENDERTYPE_LINES_SNIPPET)
-                    .withLocation("pipeline/lines")
-                    .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-                    .build());
-
-    private static final RenderPipeline PIPELINE_BOX = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.RENDERTYPE_LINES_SNIPPET)
-                    .withLocation("debug_filled_box")
-                    .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.TRIANGLE_STRIP)
-                    .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-                    .build());
-
-    private static final Map<Float, RenderLayer.MultiPhase> LINE_WIDTH_TRACKER = new HashMap<>();
-    private static final RenderLayer.MultiPhase BOX_LAYER = RenderLayer.of(
-                    "fim:box",
-                    1536,
-                    false,
-                    true,
-                    PIPELINE_BOX,
-                    RenderLayer.MultiPhaseParameters.builder()
-                        .layering(NO_LAYERING)
-                        .target(ITEM_ENTITY_TARGET)
-                        .build(false));
+    private static Map<Float, RenderLayer.MultiPhase> LINE_WIDTH_TRACKER = new HashMap<>();
 
     private final WorldRenderContext mcContext;
     private RenderLayer.MultiPhase lineLayer = null;
@@ -58,6 +29,13 @@ public class ImplRenderContext3D implements RenderContext3D {
 
     @Override
     public void beginRender() {
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1f);
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
     }
 
     @Override
@@ -75,12 +53,17 @@ public class ImplRenderContext3D implements RenderContext3D {
 
         lineLayer = LINE_WIDTH_TRACKER.computeIfAbsent(lineWidth, f -> RenderLayer.of(
                 "line_wide_" + lineWidth,
+                VertexFormats.LINES,
+                VertexFormat.DrawMode.LINES,
                 1536,
-                PIPELINE_LINES,
                 RenderLayer.MultiPhaseParameters.builder()
+                        .program(LINES_PROGRAM)
                         .lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
                         .layering(VIEW_OFFSET_Z_LAYERING)
+                        .transparency(TRANSLUCENT_TRANSPARENCY)
                         .target(ITEM_ENTITY_TARGET)
+                        .writeMaskState(ALL_MASK)
+                        .cull(DISABLE_CULLING)
                         .build(false)
         ));
     }
@@ -144,7 +127,15 @@ public class ImplRenderContext3D implements RenderContext3D {
 
     @Override
     public float tickDelta() {
-        return mcContext.tickCounter().getTickProgress(true);
+        return mcContext.tickCounter().getTickDelta(true);
+    }
+
+    private VertexConsumer boxConsumer(){
+        return mcContext.consumers().getBuffer(RenderLayer.getDebugFilledBox());
+    }
+
+    private VertexConsumer lineConsumer(){
+        return mcContext.consumers().getBuffer(lineLayer);
     }
 
     @Override
@@ -155,13 +146,5 @@ public class ImplRenderContext3D implements RenderContext3D {
         return (x, y, z, color) -> {
             boxConsumer.vertex(peek, x, y, z).color(color);
         };
-    }
-
-    private VertexConsumer boxConsumer(){
-        return mcContext.consumers().getBuffer(BOX_LAYER);
-    }
-
-    private VertexConsumer lineConsumer(){
-        return mcContext.consumers().getBuffer(lineLayer);
     }
 }

@@ -68,6 +68,9 @@ public class WorldRenderingManager {
     }
 
     private void render(RenderContext3D context){
+        //Render tool first, because tool updates vectors & locations
+        ToolRenderingManager.get().render(context);
+
         Positioned editing = ToolManager.get().getEditing();
         if(editing != null){
             switch (editing) {
@@ -88,8 +91,6 @@ public class WorldRenderingManager {
         }
 
         renderCursorPickingBlock(context);
-
-        ToolRenderingManager.get().render(context);
     }
 
     private void renderCursorPickingBlock(@NotNull RenderContext3D context){

@@ -5,6 +5,7 @@ import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
+import fish.crafting.fimfabric.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -57,7 +58,7 @@ public class WorldSelectorManager {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if(player == null) return;
 
-        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false);
+        float tickDelta = RenderUtils.tickDelta();
         Vec3d camera = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
 
         Vec3d vec3d = player.getCameraPosVec(tickDelta);

@@ -269,6 +269,8 @@ public class RotateTool extends CustomTool<PosRotated> {
         context.push();
         context.translateCamera();
 
+        RenderContext3D.VertexHelper vertexHelper = context.renderVertices();
+
         int bigCircleAngles = 60;
         double bigRotate = Math.TAU / bigCircleAngles;
 
@@ -340,19 +342,19 @@ public class RotateTool extends CustomTool<PosRotated> {
                     pos3 = t;
                 }
 
-                context.vertex((float) (pos1.x + position.x),
+                vertexHelper.vertex((float) (pos1.x + position.x),
                                 (float) (pos1.y + position.y),
                                 (float) (pos1.z + position.z), color);
 
-                context.vertex((float) (pos2.x + position.x),
+                vertexHelper.vertex((float) (pos2.x + position.x),
                                 (float) (pos2.y + position.y),
                                 (float) (pos2.z + position.z), color);
 
-                context.vertex((float) (pos3.x + position.x),
+                vertexHelper.vertex((float) (pos3.x + position.x),
                                 (float) (pos3.y + position.y),
                                 (float) (pos3.z + position.z), color);
 
-                context.vertex((float) (pos4.x + position.x),
+                vertexHelper.vertex((float) (pos4.x + position.x),
                                 (float) (pos4.y + position.y),
                                 (float) (pos4.z + position.z), color);
 

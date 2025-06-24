@@ -16,8 +16,8 @@ public class CursorPicking {
 
     private static final RenderFrameCache<BlockHitResult> cachedRaycast = new RenderFrameCache<>(null);
 
-    private static Vec3d vec1;
-    private static double x, y, z;
+    private static Vec3d vec1 = new Vec3d(0, 300, 0);
+    private static double x = 0, y = -1, z = 0;
     public static Matrix4f projectionMatrix = new Matrix4f(), viewMatrix = new Matrix4f(), positionMatrix = new Matrix4f();
 
     public static void update(){
