@@ -1,7 +1,7 @@
-package fish.crafting.fimfabric.connection;
+package fish.crafting.fimfabric.listener;
 
+import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.editor.vector.EditorLocation;
-import fish.crafting.fimfabric.editor.vector.EditorVector;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
@@ -18,10 +18,10 @@ public class GenericTickListener implements ClientTickEvents.EndTick {
         WorldSelectorManager.get().updateSelectors();
         ConnectionManager.get().tick();
 
-        Positioned editing = ToolManager.get().getEditing();
+        /*Positioned editing = ToolManager.get().getEditing();
         if(editing == null){
-            ToolManager.get().setEditing(new EditorVector(0, 300, 0));
-        }
+            ToolManager.get().setEditing(new EditorLocation(43, 115, -114, 0f, 0f, ""));
+        }*/
 
     }
 }

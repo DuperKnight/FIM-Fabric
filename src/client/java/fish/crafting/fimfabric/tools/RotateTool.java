@@ -5,6 +5,7 @@ import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
 import fish.crafting.fimfabric.editor.vector.EditorLocation;
 import fish.crafting.fimfabric.editor.vector.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
 import fish.crafting.fimfabric.tools.worldselector.CircularSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
@@ -14,7 +15,6 @@ import fish.crafting.fimfabric.util.*;
 import fish.crafting.fimfabric.util.render.FadeTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
@@ -87,7 +87,7 @@ public class RotateTool extends CustomTool<PosRotated> {
     }
 
     @Override
-    public void render2D(DrawContext context, RenderTickCounter counter) {
+    public void render2D(ScreenRenderContext context, RenderTickCounter counter) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         if(fadingText.isActive()) {
@@ -103,7 +103,6 @@ public class RotateTool extends CustomTool<PosRotated> {
 
         if(lastRendered != null && startRot != null) {
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "Before: " + stringify(startRot),
                     WindowUtil.scaledWidth() / 2,
                     40,
@@ -111,7 +110,6 @@ public class RotateTool extends CustomTool<PosRotated> {
             );
 
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "After: " + stringify(lastRendered.pitch(), lastRendered.yaw()),
                     WindowUtil.scaledWidth() / 2,
                     (int) (40 + textRenderer.fontHeight * 1.5),
@@ -119,7 +117,6 @@ public class RotateTool extends CustomTool<PosRotated> {
             );
 
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "Press ENTER to confirm edit.",
                     WindowUtil.scaledWidth() / 2,
                     (int) (40 + textRenderer.fontHeight * 3),
@@ -128,7 +125,6 @@ public class RotateTool extends CustomTool<PosRotated> {
 
             if(KeyUtil.isShiftPressed()){
                 context.drawCenteredTextWithShadow(
-                        textRenderer,
                         "Won't clear and return to IntelliJ",
                         WindowUtil.scaledWidth() / 2,
                         (int) (40 + textRenderer.fontHeight * 4.5),
@@ -222,7 +218,7 @@ public class RotateTool extends CustomTool<PosRotated> {
                     (float) (pos.x + startRotDir.x),
                     (float) (pos.y + startRotDir.y),
                     (float) (pos.z + startRotDir.z),
-                    255, 255, 255
+                    1f, 1f, 1f
             );
 
             context.pop();

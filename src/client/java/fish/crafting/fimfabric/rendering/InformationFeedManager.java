@@ -1,12 +1,12 @@
 package fish.crafting.fimfabric.rendering;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.util.ColorUtil;
 import fish.crafting.fimfabric.util.NumUtil;
 import fish.crafting.fimfabric.util.SoundUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -36,10 +36,10 @@ public class InformationFeedManager {
         lines.add(line);
     }
 
-    public void render(DrawContext context) {
+    public void render(ScreenRenderContext context) {
         if(lines.isEmpty()) return;
 
-        context.getMatrices().push();
+        context.push();
 
         Iterator<FeedLine> iterator = lines.iterator();
         long now = System.nanoTime();
@@ -60,7 +60,7 @@ public class InformationFeedManager {
             }
 
             if(stopRenderingTime <= now){
-                context.getMatrices().translate(0, addY * NumUtil.sinLerpCurrentTime(1.0, 0.0, stopRenderingTime, DROP_DURATION), 0);
+                context.translate(0, addY * NumUtil.sinLerpCurrentTime(1.0, 0.0, stopRenderingTime, DROP_DURATION));
                 //y += (int) (addY * NumUtil.sinLerpCurrentTime(1.0, 0.0, stopRenderingTime, DROP_DURATION));
                 continue;
             }
@@ -79,7 +79,7 @@ public class InformationFeedManager {
         }
 
         context.draw();
-        context.getMatrices().pop();
+        context.pop();
     }
 
     public static FeedLine success(String text, boolean sound){
@@ -100,7 +100,7 @@ public class InformationFeedManager {
 
     public static FeedLine warn(String text, boolean sound){
         var line = new Warn(text);
-        if(sound) line.uiSound();
+        if(sound) line.sound(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE, 2f);
         get().add(line);
 
         return line;
@@ -112,6 +112,14 @@ public class InformationFeedManager {
         get().add(line);
 
         return line;
+    }
+
+    public boolean hasFeed() {
+        return !lines.isEmpty();
+    }
+
+    public void clear() {
+        lines.clear();
     }
 
     private static class Error extends SimpleColoredFeedLine {
@@ -151,14 +159,13 @@ public class InformationFeedManager {
         }
 
         @Override
-        protected void render0(DrawContext context, int x, int y, int alpha) {
+        protected void render0(ScreenRenderContext context, int x, int y, int alpha) {
             int clr = ColorUtil.alpha(color, alpha);
 
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             int size = textRenderer.fontHeight;
 
             context.drawGuiTexture(
-                    RenderLayer::getGuiTextured,
                     icon,
                     x - size - 2,
                     y,
@@ -184,7 +191,7 @@ public class InformationFeedManager {
         public final long startMS = System.nanoTime();
         private long stay = 5_000_000_000L; //5s
 
-        public final void render(DrawContext context, int x, int y, int alpha) {
+        public final void render(ScreenRenderContext context, int x, int y, int alpha) {
             render0(context, x, y, alpha);
             if(!playedSound && sound != null) {
                 playedSound = true;
@@ -206,7 +213,7 @@ public class InformationFeedManager {
             return sound(SoundEvents.UI_TOAST_IN, 1.0f);
         }
 
-        protected abstract void render0(DrawContext context, int x, int y, int alpha);
+        protected abstract void render0(ScreenRenderContext context, int x, int y, int alpha);
 
     }
 

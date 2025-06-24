@@ -1,5 +1,6 @@
 package fish.crafting.fimfabric.ui.actions;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.UIComponent;
 import fish.crafting.fimfabric.util.ClickContext;
@@ -8,7 +9,6 @@ import fish.crafting.fimfabric.util.WindowUtil;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,15 +37,16 @@ public class UIActionList extends UIComponent {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         int bg = 0x99000000;
         fill(context, bg);
 
-        context.getMatrices().translate(0, 0, 1);
+        context.nextLayer();
 
         int height = heightPerElement();
         context.drawBorder(renderX - 1, renderY, renderWidth + 1, height * enabledElementCount, 0xFFFFFFFF);
-        context.getMatrices().translate(0, 0, -1);
+
+        context.previousLayer();
 
         if(title != null){
             context.fill(

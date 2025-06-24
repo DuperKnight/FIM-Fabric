@@ -17,8 +17,9 @@ public class TexRegistry {
     FEED_QUESTION = ui("feed/question"),
     FEED_WARN = ui("feed/warn"),
     FEED_ERROR = ui("feed/error"),
-    FEED_SUCCESS = ui("feed/success")
-            ;
+    FEED_SUCCESS = ui("feed/success"),
+    SMALL_X = ui("small_x")
+    ;
 
 
     private static @NotNull Identifier widget(@NotNull String name){

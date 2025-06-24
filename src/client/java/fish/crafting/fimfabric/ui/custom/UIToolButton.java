@@ -1,5 +1,6 @@
 package fish.crafting.fimfabric.ui.custom;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
@@ -8,7 +9,6 @@ import fish.crafting.fimfabric.util.ClickContext;
 import fish.crafting.fimfabric.util.Cursors;
 import fish.crafting.fimfabric.util.NumUtil;
 import fish.crafting.fimfabric.util.SoundUtil;
-import net.minecraft.client.gui.DrawContext;
 
 public class UIToolButton extends UIBox {
 
@@ -23,10 +23,10 @@ public class UIToolButton extends UIBox {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         float move = (float) NumUtil.sinLerpCurrentTime(-(PADDING + HEIGHT + 1.0), 0.0, lastEnableSwitchTime, 100_000_000L);
 
-        context.getMatrices().translate(0f, move, 0f);
+        context.translate(0f, move);
 
         boolean enabled = enabled();
 

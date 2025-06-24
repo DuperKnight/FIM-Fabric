@@ -1,10 +1,10 @@
 package fish.crafting.fimfabric.ui.custom.mainscreen;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.ui.UIBaseButton;
 import fish.crafting.fimfabric.util.ColorUtil;
 import fish.crafting.fimfabric.util.NumUtil;
-import net.minecraft.client.gui.DrawContext;
 
 public class UIMainActionButton extends UIBaseButton {
 
@@ -16,10 +16,10 @@ public class UIMainActionButton extends UIBaseButton {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         float move = (float) NumUtil.sinLerpCurrentTime(-(PADDING_Y + HEIGHT + 1.0), 0.0, lastEnableSwitchTime, 100_000_000L);
 
-        context.getMatrices().translate(0f, move, 0f);
+        context.translate(0f, move);
 
         renderHover(context);
 

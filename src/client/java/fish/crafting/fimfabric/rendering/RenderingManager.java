@@ -1,5 +1,6 @@
 package fish.crafting.fimfabric.rendering;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.ui.InterfaceManager;
@@ -23,23 +24,27 @@ public class RenderingManager {
         return instance == null ? new RenderingManager() : instance;
     }
 
-    public void renderOverlay(RenderTickCounter tickCounter, DrawContext drawContext) {
+    public void renderOverlay(RenderTickCounter tickCounter, DrawContext mcDrawContext) {
         if(MinecraftClient.getInstance().getOverlay() != null) return; //Reloading textures bugfix
+
+        ScreenRenderContext context = new ScreenRenderContext(mcDrawContext);
 
         taskQueue.forEach(Runnable::run);
         taskQueue.clear();
 
-        InformationFeedManager.get().render(drawContext);
-        InterfaceManager.get().render(drawContext);
+        InformationFeedManager.get().render(context);
+        InterfaceManager.get().render(context);
 
-        drawContext.draw();
+        context.draw();
     }
 
     public void renderInGameOverlay(DrawContext drawContext, RenderTickCounter tickCounter) {
         if(MinecraftClient.getInstance().getOverlay() != null) return; //mhm
 
+        ScreenRenderContext context = new ScreenRenderContext(drawContext);
+
         CustomTool<?> tool = ToolManager.get().getSelectedTool();
-        if(tool != null) tool.render2D(drawContext, tickCounter);
+        if(tool != null) tool.render2D(context, tickCounter);
     }
 
     public void addTask(Runnable runnable){

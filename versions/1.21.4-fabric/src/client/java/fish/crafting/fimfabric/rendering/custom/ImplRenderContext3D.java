@@ -18,6 +18,21 @@ public class ImplRenderContext3D implements RenderContext3D {
 
     private static Map<Float, RenderLayer.MultiPhase> LINE_WIDTH_TRACKER = new HashMap<>();
 
+    private static final RenderLayer.MultiPhase BOX_LAYER = RenderLayer.of(
+            "fim:box",
+            VertexFormats.POSITION_COLOR,
+            VertexFormat.DrawMode.TRIANGLE_STRIP,
+            1536,
+            false,
+            true,
+            RenderLayer.MultiPhaseParameters.builder()
+                    .program(POSITION_COLOR_PROGRAM)
+                    .depthTest(ALWAYS_DEPTH_TEST)
+                    .layering(WORLD_BORDER_LAYERING)
+                    .transparency(TRANSLUCENT_TRANSPARENCY)
+                    .build(false)
+    );
+
     private final WorldRenderContext mcContext;
     private RenderLayer.MultiPhase lineLayer = null;
     private Float currentLineWidth = null;
@@ -58,6 +73,7 @@ public class ImplRenderContext3D implements RenderContext3D {
                 1536,
                 RenderLayer.MultiPhaseParameters.builder()
                         .program(LINES_PROGRAM)
+                        .depthTest(ALWAYS_DEPTH_TEST)
                         .lineWidth(new LineWidth(OptionalDouble.of(lineWidth)))
                         .layering(VIEW_OFFSET_Z_LAYERING)
                         .transparency(TRANSLUCENT_TRANSPARENCY)
@@ -78,11 +94,11 @@ public class ImplRenderContext3D implements RenderContext3D {
         MatrixStack.Entry entry = mcContext.matrixStack().peek();
 
         vertexConsumer.vertex(entry, x1, y1, z1)
-                .color(r1, g1, b1, 255)
+                .color(r1, g1, b1, 1f)
                 .normal(entry, dX, dY, dZ);
 
         vertexConsumer.vertex(entry, x2, y2, z2)
-                .color(r2, g2, b2, 255)
+                .color(r2, g2, b2, 1f)
                 .normal(entry, dX, dY, dZ);
     }
 
@@ -131,7 +147,7 @@ public class ImplRenderContext3D implements RenderContext3D {
     }
 
     private VertexConsumer boxConsumer(){
-        return mcContext.consumers().getBuffer(RenderLayer.getDebugFilledBox());
+        return mcContext.consumers().getBuffer(BOX_LAYER);
     }
 
     private VertexConsumer lineConsumer(){

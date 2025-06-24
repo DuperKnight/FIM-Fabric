@@ -5,6 +5,7 @@ import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
 import fish.crafting.fimfabric.editor.vector.EditorLocation;
 import fish.crafting.fimfabric.editor.vector.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
@@ -13,7 +14,6 @@ import fish.crafting.fimfabric.util.*;
 import fish.crafting.fimfabric.util.render.FadeTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
@@ -86,13 +86,12 @@ public class MoveTool extends CustomTool<Positioned> {
     }
 
     @Override
-    public void render2D(DrawContext context, RenderTickCounter counter) {
+    public void render2D(ScreenRenderContext context, RenderTickCounter counter) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         if(fadingText.isActive()) {
             int clr = fadingText.color(0xFFFFFFFF);
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "Distance to Object: " + NumUtil.betterNumber(editingDistance),
                     WindowUtil.scaledWidth() / 2,
                     WindowUtil.scaledHeight() * 3 / 4,
@@ -102,7 +101,6 @@ public class MoveTool extends CustomTool<Positioned> {
 
         if(lastRendered != null && startPos != null) {
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "Before: " + stringify(startPos),
                     WindowUtil.scaledWidth() / 2,
                     40,
@@ -110,7 +108,6 @@ public class MoveTool extends CustomTool<Positioned> {
             );
 
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "After: " + stringify(lastRendered.getPos()),
                     WindowUtil.scaledWidth() / 2,
                     (int) (40 + textRenderer.fontHeight * 1.5),
@@ -118,7 +115,6 @@ public class MoveTool extends CustomTool<Positioned> {
             );
 
             context.drawCenteredTextWithShadow(
-                    textRenderer,
                     "Press ENTER to confirm edit.",
                     WindowUtil.scaledWidth() / 2,
                     (int) (40 + textRenderer.fontHeight * 3),
@@ -127,7 +123,6 @@ public class MoveTool extends CustomTool<Positioned> {
 
             if(KeyUtil.isShiftPressed()){
                 context.drawCenteredTextWithShadow(
-                        textRenderer,
                         "Won't clear and return to IntelliJ",
                         WindowUtil.scaledWidth() / 2,
                         (int) (40 + textRenderer.fontHeight * 4.5),
@@ -189,9 +184,6 @@ public class MoveTool extends CustomTool<Positioned> {
 
         for (ToolAxis value : ToolAxis.values()) {
             renderHandle(context, value, zoom, obj.getPos(), value.color(hoveredAxis));
-        }
-
-        for (ToolAxis value : ToolAxis.values()) {
             renderHead(context, value, zoom, obj.getPos(), value.color(hoveredAxis));
         }
 

@@ -1,8 +1,8 @@
 package fish.crafting.fimfabric.client;
 
-import fish.crafting.fimfabric.connection.ConnectionShutdownListener;
-import fish.crafting.fimfabric.connection.GenericTickListener;
-import fish.crafting.fimfabric.connection.KeybindTickListener;
+import fish.crafting.fimfabric.listener.ConnectionShutdownListener;
+import fish.crafting.fimfabric.listener.GenericTickListener;
+import fish.crafting.fimfabric.listener.KeybindTickListener;
 import fish.crafting.fimfabric.connection.packetsystem.PacketManager;
 import fish.crafting.fimfabric.keybind.*;
 import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;

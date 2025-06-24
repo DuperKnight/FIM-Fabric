@@ -1,8 +1,8 @@
 package fish.crafting.fimfabric.ui;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.util.ColorUtil;
 import fish.crafting.fimfabric.util.Constants;
-import net.minecraft.client.gui.DrawContext;
 
 public class UIBox extends UIComponent {
 
@@ -10,7 +10,7 @@ public class UIBox extends UIComponent {
         super(x, y, width, height);
     }
 
-    protected void renderHover(DrawContext context){
+    protected void renderHover(ScreenRenderContext context){
         long now = System.nanoTime();
         if(this.startedHoveringAt > now || this.endedHoveringAt > now) return;
 

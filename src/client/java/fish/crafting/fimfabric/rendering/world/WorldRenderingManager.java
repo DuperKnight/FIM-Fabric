@@ -52,14 +52,9 @@ public class WorldRenderingManager {
         RENDER_FRAME++;
 
         RenderContext3D context;
-        //#if MC==12104
+        //It happens that all the versioned renderer impls have the same constructor
         context = new ImplRenderContext3D(worldCtx);
-        //#endif
-
-        //#if MC==12105
-        //$$ context = new ImplRenderContext3D();
-        //#endif
-
+        
         context.beginRender();
         render(context);
         context.endRender();
@@ -168,9 +163,9 @@ public class WorldRenderingManager {
                 (float) (pos.x + direction.x),
                 (float) (pos.y + direction.y),
                 (float) (pos.z + direction.z),
-                (int) (r * 255),
-                (int) (g * 255),
-                (int) (b * 255));
+                r,
+                g,
+                b);
 
         context.pop();
     }

@@ -1,4 +1,4 @@
-package fish.crafting.fimfabric.connection;
+package fish.crafting.fimfabric.listener;
 
 import fish.crafting.fimfabric.keybind.CustomKeybind;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

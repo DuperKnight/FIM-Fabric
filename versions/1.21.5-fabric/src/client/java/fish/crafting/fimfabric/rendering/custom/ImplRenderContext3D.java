@@ -10,8 +10,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -21,7 +19,7 @@ import java.util.OptionalDouble;
 
 import static net.minecraft.client.render.RenderPhase.*;
 
-//1.21.6
+//1.21.5
 public class ImplRenderContext3D implements RenderContext3D {
 
     private static final RenderPipeline PIPELINE_LINES = RenderPipelines.register(
@@ -45,7 +43,7 @@ public class ImplRenderContext3D implements RenderContext3D {
                     true,
                     PIPELINE_BOX,
                     RenderLayer.MultiPhaseParameters.builder()
-                        .layering(VIEW_OFFSET_Z_LAYERING)
+                        .layering(NO_LAYERING)
                         .target(ITEM_ENTITY_TARGET)
                         .build(false));
 

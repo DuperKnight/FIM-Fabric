@@ -1,6 +1,7 @@
 package fish.crafting.fimfabric.ui.actions;
 
 import fish.crafting.fimfabric.connection.ConnectionManager;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.InterfaceManager;
 import fish.crafting.fimfabric.ui.UIBox;
@@ -13,7 +14,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,16 +40,20 @@ public abstract class ActionElement extends UIBox {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         UIActionList listParent = getListParent();
         if(listParent == null) return;
 
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        fill(context, 0x99000000);
+        context.fill(renderX, renderY, renderX + renderWidth - 1, renderY + renderHeight, 0x99000000);
+
         if(separator){
+            context.nextLayer();
             context.drawHorizontalLine(renderX, renderX + renderWidth, renderY - 1, 0x22FFFFFF);
+            context.previousLayer();
         }
+
         if(this.active){
             renderHover(context);
         }

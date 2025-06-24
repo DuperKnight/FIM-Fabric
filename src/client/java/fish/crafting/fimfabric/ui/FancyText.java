@@ -1,9 +1,8 @@
 package fish.crafting.fimfabric.ui;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,15 +42,14 @@ public class FancyText {
         return this;
     }
 
-    public void render(DrawContext context, int x, int y, int color, boolean shadow){
+    public void render(ScreenRenderContext context, int x, int y, int color, boolean shadow){
         render(context, x, y, color, shadow, MinecraftClient.getInstance().textRenderer);
     }
 
-    public void render(DrawContext context, int x, int y, int color, boolean shadow, TextRenderer renderer){
+    public void render(ScreenRenderContext context, int x, int y, int color, boolean shadow, TextRenderer renderer){
         if(icon != null){
             int size = renderer.fontHeight;
             context.drawGuiTexture(
-                    RenderLayer::getGuiTextured,
                     icon,
                     x,
                     y - 1,

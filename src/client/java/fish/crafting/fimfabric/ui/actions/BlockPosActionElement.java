@@ -1,10 +1,10 @@
 package fish.crafting.fimfabric.ui.actions;
 
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.util.BlockUtils;
 import fish.crafting.fimfabric.util.ClickContext;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public abstract class BlockPosActionElement extends ActionElement {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         super.render(context);
     }
 

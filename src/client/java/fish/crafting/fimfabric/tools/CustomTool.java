@@ -2,9 +2,9 @@ package fish.crafting.fimfabric.tools;
 
 import fish.crafting.fimfabric.client.FIMModClient;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.util.Constants;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
@@ -17,7 +17,7 @@ public abstract class CustomTool<T extends Positioned> {
 
     }
 
-    public void render2D(DrawContext context, RenderTickCounter counter) {
+    public void render2D(ScreenRenderContext context, RenderTickCounter counter) {
 
     }
 

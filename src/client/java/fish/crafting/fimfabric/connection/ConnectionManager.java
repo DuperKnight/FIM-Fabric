@@ -128,7 +128,7 @@ public class ConnectionManager {
             FIMModClient.LOGGER.info("Connection to IntelliJ was terminated!");
 
             if(sendFeed){
-                InformationFeedManager.warn("Connection to IntelliJ was terminated!", true);
+                InformationFeedManager.info("Connection to IntelliJ was terminated.", true);
             }
 
             endConnection();

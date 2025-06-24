@@ -1,8 +1,10 @@
 package fish.crafting.fimfabric.ui;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.EditorTools;
 import fish.crafting.fimfabric.ui.actions.UIActionList;
+import fish.crafting.fimfabric.ui.custom.UIClearFeedButton;
 import fish.crafting.fimfabric.ui.custom.UILanguageSwitcher;
 import fish.crafting.fimfabric.ui.custom.UIToolButton;
 import fish.crafting.fimfabric.ui.custom.blockactions.UIBlockActions;
@@ -12,7 +14,6 @@ import fish.crafting.fimfabric.ui.scroll.UIScrollable;
 import fish.crafting.fimfabric.util.*;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class InterfaceManager {
     private static InterfaceManager instance = null;
     private static long cursor = -1L;
     private final UIBaseLayer BASE = new UIBaseLayer();
+    private final UIBaseLayer MOUSE_DEPENDANT_LAYER = new UIBaseLayer();
     private final UIBaseLayer CHAT_DEPENDANT_LAYER = new UIBaseLayer();
     private final UIBaseLayer SCREENS = new UIBaseLayer();
     private final UIBaseLayer TOOLS = new UIBaseLayer();
@@ -54,7 +56,7 @@ public class InterfaceManager {
     }
 
     private void setupBasicInterface(){
-        BASE.addChildren(CHAT_DEPENDANT_LAYER);
+        BASE.addChildren(CHAT_DEPENDANT_LAYER, MOUSE_DEPENDANT_LAYER);
 
         List<CustomTool<?>> allTools = EditorTools.getAll();
         int index = allTools.size() - 1;
@@ -65,6 +67,10 @@ public class InterfaceManager {
         CHAT_DEPENDANT_LAYER.addChildren(
             TOOLS,
             LANG_SWITCHER
+        );
+
+        MOUSE_DEPENDANT_LAYER.addChildren(
+                new UIClearFeedButton()
         );
     }
 
@@ -84,6 +90,18 @@ public class InterfaceManager {
         }
     }
 
+    public void handleMouseLock(boolean locked){
+        if(locked) {
+            actionList(null);
+        }
+
+        if(locked){
+            MOUSE_DEPENDANT_LAYER.disableAll();
+        }else{
+            MOUSE_DEPENDANT_LAYER.enableAll();
+        }
+    }
+
     public static InterfaceManager get(){
         return instance == null ? new InterfaceManager() : instance;
     }
@@ -92,7 +110,7 @@ public class InterfaceManager {
         BASE.visitEnabled(c -> c.onWindowResized(width, height), true);
     }
 
-    public void render(DrawContext context){
+    public void render(ScreenRenderContext context){
         if(this.updateHover){
             updateHover(MouseUtil.xInt(), MouseUtil.yInt());
             this.updateHover = false;
@@ -110,8 +128,8 @@ public class InterfaceManager {
         }
     }
 
-    private void renderComponent(UIComponent component, DrawContext context){
-        context.getMatrices().push();
+    private void renderComponent(UIComponent component, ScreenRenderContext context){
+        context.push();
         component.handleRender(context);
 
         Scroller scroller;
@@ -135,7 +153,7 @@ public class InterfaceManager {
                     component.renderY + h2,
                     0x88FFFFFF);
         }
-        context.getMatrices().pop();
+        context.pop();
     }
 
     private void actionList(UIActionList list){
@@ -198,12 +216,6 @@ public class InterfaceManager {
 
     public boolean isBlockActionListActive(){
         return BLOCK_ACTIONS.isEnabled();
-    }
-
-    public void handleMouseLock(boolean locked){
-        if(locked) {
-            actionList(null);
-        }
     }
 
     public UIComponent getTopmost(int x, int y, boolean filterHoverable){

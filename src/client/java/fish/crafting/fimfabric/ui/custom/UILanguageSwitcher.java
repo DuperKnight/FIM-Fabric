@@ -1,6 +1,7 @@
 package fish.crafting.fimfabric.ui.custom;
 
 import fish.crafting.fimfabric.connection.ConnectionManager;
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.UIBox;
 import fish.crafting.fimfabric.util.ClickContext;
 import fish.crafting.fimfabric.util.ColorUtil;
@@ -8,7 +9,6 @@ import fish.crafting.fimfabric.util.SoundUtil;
 import fish.crafting.fimfabric.util.render.FadeTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.math.MathHelper;
 
 public class UILanguageSwitcher extends UIBox {
@@ -22,7 +22,7 @@ public class UILanguageSwitcher extends UIBox {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         String text = "Language: ";
 

@@ -1,10 +1,10 @@
 package fish.crafting.fimfabric.ui.list;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.ui.UIBox;
 import fish.crafting.fimfabric.ui.UIComponent;
 import fish.crafting.fimfabric.ui.scroll.Scroller;
 import fish.crafting.fimfabric.ui.scroll.UIScrollable;
-import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public abstract class UIList<Element> extends UIBox implements UIScrollable {
     }
 
     @Override
-    protected void render(DrawContext context) {
+    protected void render(ScreenRenderContext context) {
         super.render(context);
 
         scroller.checkScroll();

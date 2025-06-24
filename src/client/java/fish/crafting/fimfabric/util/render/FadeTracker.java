@@ -67,4 +67,8 @@ public class FadeTracker {
         return ColorUtil.alpha(color, alpha());
     }
 
+    public int white(){
+        return color(0xFFFFFFFF);
+    }
+
 }

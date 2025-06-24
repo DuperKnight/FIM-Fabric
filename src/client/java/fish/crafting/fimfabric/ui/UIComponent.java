@@ -1,13 +1,12 @@
 package fish.crafting.fimfabric.ui;
 
+import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.util.ClickContext;
 import fish.crafting.fimfabric.util.Cursors;
 import fish.crafting.fimfabric.util.NumUtil;
 import fish.crafting.fimfabric.util.WindowUtil;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -182,7 +181,7 @@ public class UIComponent {
      * @return true, if the component has finished rendering, and shouldn't render anymore.
      */
 
-    protected boolean renderDisabled(DrawContext context){
+    protected boolean renderDisabled(ScreenRenderContext context){
        return false;
     }
 
@@ -190,7 +189,7 @@ public class UIComponent {
         return false;
     }
 
-    public final void handleRender(DrawContext context){
+    public final void handleRender(ScreenRenderContext context){
         renderX = x;
         renderY = y;
         renderWidth = width;
@@ -198,7 +197,7 @@ public class UIComponent {
         render(context);
     }
 
-    protected void render(DrawContext context){
+    protected void render(ScreenRenderContext context){
 
     }
 
@@ -337,17 +336,16 @@ public class UIComponent {
         this.y = (int) (y0 + NumUtil.clamp(dY, 0.0, 1.0) * h - this.height / 2.0);
     }
 
-    protected void fill(DrawContext context, int color){
+    protected void fill(ScreenRenderContext context, int color){
         context.fill(renderX, renderY, renderX + renderWidth, renderY + renderHeight, color);
     }
 
-    protected void renderIcon(DrawContext context, Identifier identifier){
+    protected void renderIcon(ScreenRenderContext context, Identifier identifier){
         renderIcon(context, identifier, 0xFFFFFFFF);
     }
 
-    protected void renderIcon(DrawContext context, Identifier identifier, int color){
+    protected void renderIcon(ScreenRenderContext context, Identifier identifier, int color){
         context.drawGuiTexture(
-                RenderLayer::getGuiTextured,
                 identifier,
                 renderX,
                 renderY,

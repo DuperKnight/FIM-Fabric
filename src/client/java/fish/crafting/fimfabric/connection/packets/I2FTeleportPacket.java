@@ -1,6 +1,7 @@
 package fish.crafting.fimfabric.connection.packets;
 
 import fish.crafting.fimfabric.connection.packetsystem.InPacket;
+import fish.crafting.fimfabric.util.PlayerUtil;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -54,13 +55,13 @@ public class I2FTeleportPacket implements InPacket {
 
         //If the packet has a rotation, or the player is just far away, teleport.
         if(hasRot || client.player.squaredDistanceTo(x, y, z) > (6 * 6)) {
-            networkHandler.sendCommand(teleportCommand);
+            PlayerUtil.sendCommand(teleportCommand);
         }
 
         //If the packet doesn't have a rotation, make the player face the specified location
         if(!hasRot) {
             double facingY = y - client.player.getEyeHeight(client.player.getPose());
-            networkHandler.sendCommand("rotate @s facing " + x + " " + facingY + " " + z);
+            PlayerUtil.sendCommand("rotate @s facing " + x + " " + facingY + " " + z);
         }
 
     }
