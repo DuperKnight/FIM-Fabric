@@ -43,7 +43,7 @@ public class ImplRenderContext3D implements RenderContext3D {
                     true,
                     PIPELINE_BOX,
                     RenderLayer.MultiPhaseParameters.builder()
-                        .layering(NO_LAYERING)
+                        .layering(VIEW_OFFSET_Z_LAYERING)
                         .target(ITEM_ENTITY_TARGET)
                         .build(false));
 

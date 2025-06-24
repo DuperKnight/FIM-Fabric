@@ -40,8 +40,8 @@ public class WorldRenderingManager {
 
     private WorldRenderingManager(){
         instance = this;
-        WorldRenderEvents.AFTER_TRANSLUCENT.addPhaseOrdering(Event.DEFAULT_PHASE, WORLD_DRAW);
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(WORLD_DRAW, get()::handleRenderEvent);
+        WorldRenderEvents.BEFORE_DEBUG_RENDER.addPhaseOrdering(Event.DEFAULT_PHASE, WORLD_DRAW);
+        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WORLD_DRAW, get()::handleRenderEvent);
     }
 
     public static WorldRenderingManager get(){

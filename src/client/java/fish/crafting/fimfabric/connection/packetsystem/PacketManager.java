@@ -24,7 +24,7 @@ public class PacketManager {
         register(new PacketId("i2f_focus"), new I2FFocusPacket());
         register(new PacketId("i2f_edit"), new I2FEditPacket());
         register(new PacketId("i2f_ij_focused"), new I2FIntelliJFocusedPacket());
-        register(new PacketId("i2f_langs"), new I2FLangPacket());
+        register(new PacketId("i2f_lang"), new I2FLangPacket());
     }
 
     public void handleReceivedPacket(ByteBuf buf){
