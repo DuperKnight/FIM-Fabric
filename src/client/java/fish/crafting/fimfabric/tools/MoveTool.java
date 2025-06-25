@@ -17,7 +17,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
@@ -196,6 +198,30 @@ public class MoveTool extends CustomTool<Positioned> {
         if(this.startPos == null) {
             this.startPos = obj.getPos();
         }
+
+        context.push();
+        context.translateCamera();
+
+        if(this.editingPos) {
+            Vec3d pos = obj.getPos();
+            int x = MathHelper.floor(pos.x);
+            int y = MathHelper.floor(pos.y);
+            int z = MathHelper.floor(pos.z);
+
+            context.renderFilledBox(
+                    x, y, z,
+                    x + 1, y + 1, z + 1,
+                    1f, 0.8f, 0.8f, 0.5f
+            );
+
+            context.renderBoxOutline(
+                    x, y, z,
+                    x + 1, y + 1, z + 1,
+                    1f, 0.8f, 0.8f, 0.4f
+            );
+        }
+
+        context.pop();
 
         Vec3d camera = context.camera();
 

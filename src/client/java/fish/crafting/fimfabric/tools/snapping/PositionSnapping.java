@@ -2,6 +2,7 @@ package fish.crafting.fimfabric.tools.snapping;
 
 import fish.crafting.fimfabric.util.render.CombinedFadeTracker;
 import lombok.Getter;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +10,7 @@ import java.util.function.Function;
 
 public abstract class PositionSnapping {
 
-    private static final Function<Double, Double> SNAP_CENTER = pos -> ((int) (double) pos) + 0.5;
+    private static final Function<Double, Double> SNAP_CENTER = pos -> (MathHelper.floor(pos)) + 0.5;
     private static final Function<Double, Double> SNAP_HALF = pos -> ((int) Math.round(pos / 0.5)) * 0.5;
     private static final Function<Double, Double> DONT_SNAP = pos -> pos;
 
