@@ -7,6 +7,7 @@ import fish.crafting.fimfabric.editor.vector.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
+import fish.crafting.fimfabric.tools.snapping.PositionSnapping;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
 import fish.crafting.fimfabric.ui.TexRegistry;
@@ -23,7 +24,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fish.crafting.fimfabric.tools.snapping.PositionSnapping.ALL_SNAPPINGS;
+
 public class MoveTool extends CustomTool<Positioned> {
+
+    private static int SNAPPING_INDEX = 1;
+    public static PositionSnapping SNAPPING = ALL_SNAPPINGS[SNAPPING_INDEX];
+
+    static {
+        SNAPPING.fade.fadeIn();
+    }
 
     private final BoundingBox[] axisBoundingBoxes;
     private final List<WorldSelector> axisSelectors = new ArrayList<>();
@@ -89,12 +99,56 @@ public class MoveTool extends CustomTool<Positioned> {
     public void render2D(ScreenRenderContext context, RenderTickCounter counter) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
+        int windowWidth = WindowUtil.scaledWidth();
+        int snappingWidth = 90;
+        int windowHeight = WindowUtil.scaledHeight();
+        int snappingHeight = 50;
+
+        int snappingX = windowWidth - snappingWidth - 10;
+        int snappingY = windowHeight - snappingHeight - 20;
+
+        int fontHeight = context.fontHeight();
+
+        context.drawCenteredTextWithShadow("Alt + Scroll to",
+                snappingX + snappingWidth / 2,
+                snappingY - 32 - fontHeight,
+                0x99FFFFFF);
+
+        context.drawCenteredTextWithShadow("change snapping",
+                snappingX + snappingWidth / 2,
+                snappingY - 30,
+                0x99FFFFFF);
+
+        context.drawGradientBox(
+                snappingX,
+                snappingY,
+                snappingWidth,
+                snappingHeight,
+                15,
+                0xAA000000,
+                true
+        );
+
+        int i = 0;
+        for (PositionSnapping snapping : ALL_SNAPPINGS) {
+            int alpha = 128 + snapping.fade.alpha() / 2;
+            int color = ColorUtil.alpha(0xFFFFFFFF, alpha);
+
+            context.drawText(
+                    snapping.getName(),
+                    snappingX + 3,
+                    (int) (snappingY + fontHeight * 1.5 * i++ + 3),
+                    color,
+                    true
+            );
+        }
+
         if(fadingText.isActive()) {
             int clr = fadingText.color(0xFFFFFFFF);
             context.drawCenteredTextWithShadow(
                     "Distance to Object: " + NumUtil.betterNumber(editingDistance),
                     WindowUtil.scaledWidth() / 2,
-                    WindowUtil.scaledHeight() * 3 / 4,
+                    windowHeight * 3 / 4,
                     clr
             );
         }
@@ -166,11 +220,20 @@ public class MoveTool extends CustomTool<Positioned> {
                     double y = editingAxis == ToolAxis.Y ? coord : obj.getPos().y;
                     double z = editingAxis == ToolAxis.Z ? coord : obj.getPos().z;
 
+                    x = SNAPPING.snapXZ(x);
+                    y = SNAPPING.snapY(y);
+                    z = SNAPPING.snapXZ(z);
+
                     obj.setPos(x, y, z);
                 }
             }else{
                 Vec3d newPos = camera.add(rot.multiply(editingDistance));
-                obj.setPos(newPos.x, newPos.y, newPos.z);
+
+                double x = SNAPPING.snapXZ(newPos.x);
+                double y = SNAPPING.snapY(newPos.y);
+                double z = SNAPPING.snapXZ(newPos.z);
+
+                obj.setPos(x, y, z);
             }
         }
 
@@ -403,21 +466,40 @@ public class MoveTool extends CustomTool<Positioned> {
 
     @Override
     public boolean onScroll(double scroll) {
+        if(KeyUtil.isAltPressed()){
+            moveSnapping((int) -scroll);
+
+            return true;
+        }
+
         if(!editingPos || editingAxis != null) return false; //Is editing vector directly
 
         double move = 0.5 * scroll;
         if(KeyUtil.isControlPressed()) move *= 4;
         if(KeyUtil.isShiftPressed()) move *= 0.5;
 
-        if(KeyUtil.isAltPressed() && scroll < 0) {
-            editingDistance = 0;
-        }else{
-            editingDistance += move;
-            if(editingDistance < 0) editingDistance = 0;
-        }
+        editingDistance += move;
+        if(editingDistance < 0) editingDistance = 0;
 
         fadingText.begin();
         return true;
+    }
+
+    public static void moveSnapping(int by) {
+        int before = SNAPPING_INDEX;
+
+        SNAPPING_INDEX += by;
+
+        if(SNAPPING_INDEX < 0) SNAPPING_INDEX = 0;
+        else if(SNAPPING_INDEX >= ALL_SNAPPINGS.length) SNAPPING_INDEX = ALL_SNAPPINGS.length - 1;
+
+        if(before == SNAPPING_INDEX) return; //Nothing changed
+
+        SoundUtil.play(SoundManager.SWITCH, 0.6f + SNAPPING_INDEX * 0.05f);
+
+        SNAPPING.fade.fadeOut();
+        SNAPPING = ALL_SNAPPINGS[SNAPPING_INDEX];
+        SNAPPING.fade.fadeIn();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fish.crafting.fimfabric.rendering.custom;
 
+import fish.crafting.fimfabric.util.ColorUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 //#if MC>=12106
@@ -113,6 +114,70 @@ public class ScreenRenderContext {
         context.fill(x1, y1, x2, y2, color);
     }
 
+    public void fillYGradient(int x1, int y1, int x2, int y2, int color1, int color2){
+        context.fillGradient(x1, y1, x2, y2, color1, color2);
+    }
+
+    /**
+     * Draws a custom gradient box.
+     * It looks like this:
+     * GRADIENT (FADE IN)
+     * FILL
+     * GRADIENT (FADE OUT)
+     */
+    public void drawGradientBox(int fillX, int fillY, int fillWidth, int fillHeight, int gradientHeight, int color, boolean outline){
+        int emptyColor = ColorUtil.alpha(color, 0);
+
+        fillYGradient(fillX,
+                fillY - gradientHeight,
+                fillX + fillWidth,
+                fillY,
+                emptyColor,
+                color);
+
+        fill(fillX,
+                fillY,
+                fillX + fillWidth,
+                fillY + fillHeight,
+                color);
+
+        fillYGradient(fillX,
+                fillY + fillHeight,
+                fillX + fillWidth,
+                fillY + fillHeight + gradientHeight,
+                color,
+                emptyColor);
+
+        if(outline) {
+            int lineWidth = 2;
+            int offset = gradientHeight / 3;
+
+            fillY += offset;
+            fillHeight -= offset * 2;
+            gradientHeight += offset;
+
+            drawGradientBox(
+                    fillX - lineWidth,
+                    fillY,
+                    lineWidth,
+                    fillHeight,
+                    gradientHeight,
+                    0xFFFFFFFF,
+                    false
+            );
+
+            drawGradientBox(
+                    fillX + fillWidth,
+                    fillY,
+                    lineWidth,
+                    fillHeight,
+                    gradientHeight,
+                    0xFFFFFFFF,
+                    false
+            );
+        }
+    }
+
     public void drawVerticalLine(int x, int y1, int y2, int color){
         context.drawVerticalLine(x, y1, y2, color);
     }
@@ -123,6 +188,10 @@ public class ScreenRenderContext {
 
     public void drawBorder(int x, int y, int width, int height, int color){
         context.drawBorder(x, y, width, height, color);
+    }
+
+    public int fontHeight() {
+        return textRenderer().fontHeight;
     }
 
     private static TextRenderer textRenderer(){
