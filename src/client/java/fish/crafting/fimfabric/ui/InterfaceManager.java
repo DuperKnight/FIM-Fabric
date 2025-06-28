@@ -237,8 +237,8 @@ public class InterfaceManager {
     }
 
     private void updateHover(int x, int y){
-        int gx = x / WindowUtil.guiScale();
-        int gy = y / WindowUtil.guiScale();
+        int gx = MouseUtil.scaledXInt();
+        int gy = MouseUtil.scaledYInt();
 
         UIComponent hovered = getTopmost(gx, gy, true);
 

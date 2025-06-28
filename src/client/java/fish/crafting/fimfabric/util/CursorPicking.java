@@ -116,8 +116,6 @@ public class CursorPicking {
         Script created by TheSnidr
     */
     private static double[] convert(Matrix4f V, Matrix4f P, double _x, double _y) {
-        int i = WindowUtil.guiScale();
-
         int width = WindowUtil.normalWidth();
         int height = WindowUtil.normalHeight();
 
