@@ -7,7 +7,6 @@ import fish.crafting.fimfabric.editor.values.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
-import fish.crafting.fimfabric.tools.snapping.PositionSnapping;
 import fish.crafting.fimfabric.tools.snapping.ScaleSnapping;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
 import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
@@ -47,7 +46,7 @@ public class ScaleTool extends CustomTool<PosScaled> {
     private final double headPartLength = 0.015;
 
     private boolean editingPos = false;
-    private double editingDistance = 2d;
+    private double scaleMultiplier = 2d;
     //Offset from the center of the vector, used so that axis-selecting won't snap
     private Double editingCoordOffset = null;
     private Vec3d referenceScale = null;
@@ -78,18 +77,19 @@ public class ScaleTool extends CustomTool<PosScaled> {
     }
 
     private void startEditingPosDirectly(@NotNull Positioned positioned, Vec3d camera){
-        this.editingPos = true;
-        this.editingDistance = camera.distanceTo(positioned.getPos());
-        this.editingAxis = null;
-        this.referenceScale = null;
+        editingPos = true;
+        editingAxis = null;
+        referenceScale = null;
+        scaleMultiplier = 1.0;
         fadingText.begin();
     }
 
     private void startEditingPosAxis(@NotNull ToolAxis axis){
-        this.editingPos = true;
-        this.editingAxis = axis;
-        this.editingCoordOffset = null;
-        this.referenceScale = null;
+        editingPos = true;
+        editingAxis = axis;
+        editingCoordOffset = null;
+        scaleMultiplier = 2.0;
+        referenceScale = null;
     }
 
     public void vectorClickCallback(Positioned positioned, boolean click){
@@ -152,7 +152,7 @@ public class ScaleTool extends CustomTool<PosScaled> {
         if(fadingText.isActive()) {
             int clr = fadingText.color(0xFFFFFFFF);
             context.drawCenteredTextWithShadow(
-                    "Scale Multiplier: " + NumUtil.betterNumber(editingDistance),
+                    "Scale Multiplier: " + NumUtil.betterNumber(scaleMultiplier),
                     WindowUtil.scaledWidth() / 2,
                     windowHeight * 3 / 4,
                     clr
@@ -250,10 +250,7 @@ public class ScaleTool extends CustomTool<PosScaled> {
             Vec3d rot = MinecraftClient.getInstance().player.getRotationVec(context.tickDelta());
 
             if(this.referenceScale == null){
-                this.referenceScale = new Vec3d(
-                        SNAPPING.snap(obj, ToolAxis.X, obj.scaleX()),
-                        SNAPPING.snap(obj, ToolAxis.Y, obj.scaleY()),
-                        SNAPPING.snap(obj, ToolAxis.Z, obj.scaleZ()));
+                this.referenceScale = obj.scaleVec();
             }
 
             if(editingAxis != null){
@@ -265,7 +262,7 @@ public class ScaleTool extends CustomTool<PosScaled> {
 
                 if(coord != null){
                     if(this.editingCoordOffset == null){
-                        this.editingCoordOffset = coord - VectorUtils.getValueUsingUnitVector(obj.getPos(), editingAxis.unit);
+                        this.editingCoordOffset = coord;
                     }
 
                     coord -= this.editingCoordOffset;
@@ -274,19 +271,16 @@ public class ScaleTool extends CustomTool<PosScaled> {
                     double y = obj.scaleY();
                     double z = obj.scaleZ();
 
-                    //In here, we make coord relative to the center
+                    coord *= scaleMultiplier; //multiplier
+                    coord += editingAxis.getValueFromUnit(referenceScale);
+                    coord = SNAPPING.snap(obj, editingAxis, coord);
+
                     if(editingAxis == ToolAxis.X){
-                        coord -= obj.getPos().x;
-                        coord = SNAPPING.snap(obj, editingAxis, coord * editingDistance);
-                        x = coord + this.referenceScale.x;
+                        x = coord;
                     }else if(editingAxis == ToolAxis.Y){
-                        coord -= obj.getPos().y;
-                        coord = SNAPPING.snap(obj, editingAxis, coord * editingDistance);
-                        y = coord + this.referenceScale.y;
+                        y = coord;
                     }else {
-                        coord -= obj.getPos().z;
-                        coord = SNAPPING.snap(obj, editingAxis, coord * editingDistance);
-                        z = coord + this.referenceScale.z;
+                        z = coord;
                     }
 
                     obj.setScale(x, y, z);
@@ -301,9 +295,9 @@ public class ScaleTool extends CustomTool<PosScaled> {
                 //distance = SNAPPING.snap(obj, ToolAxis.X, distance);
 
                 obj.setScale(
-                        this.referenceScale.x * editingDistance,
-                        this.referenceScale.y * editingDistance,
-                        this.referenceScale.z * editingDistance
+                        this.referenceScale.x * scaleMultiplier,
+                        this.referenceScale.y * scaleMultiplier,
+                        this.referenceScale.z * scaleMultiplier
                 );
             }
         }
@@ -486,8 +480,8 @@ public class ScaleTool extends CustomTool<PosScaled> {
         if(KeyUtil.isControlPressed()) move *= 4;
         if(KeyUtil.isShiftPressed()) move *= 0.5;
 
-        editingDistance += move;
-        if(editingDistance < 0.1) editingDistance = 0.1;
+        scaleMultiplier += move;
+        if(scaleMultiplier < 0.1) scaleMultiplier = 0.1;
 
         fadingText.begin();
         return true;

@@ -41,10 +41,7 @@ public enum ToolAxis {
         return currentlyHovered != this ? commonColor : (commonColor | 0xFFAAAAAA);
     }
 
-    public double getCoordFromUnit(Vec3d vec3d){
-        if(unit.x > 0) return vec3d.x;
-        if(unit.y > 0) return vec3d.y;
-        if(unit.z > 0) return vec3d.z;
-        return 0;
+    public double getValueFromUnit(Vec3d vec3d){
+        return VectorUtils.getValueUsingUnitVector(vec3d, unit);
     }
 }

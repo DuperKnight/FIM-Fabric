@@ -2,15 +2,10 @@ package fish.crafting.fimfabric.tools.snapping;
 
 import fish.crafting.fimfabric.tools.PosScaled;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
-import fish.crafting.fimfabric.util.VectorUtils;
 import fish.crafting.fimfabric.util.render.CombinedFadeTracker;
 import lombok.Getter;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public abstract class ScaleSnapping {
 
@@ -19,11 +14,11 @@ public abstract class ScaleSnapping {
     RELATIVE_HALF_BLOCK = new ScaleSnapping("Relative 0.5") {
         @Override
         public double snap(PosScaled scaled, ToolAxis axis, double pos) {
-            double coord = axis.getCoordFromUnit(scaled.getPos());
+            double scale = axis.getValueFromUnit(scaled.scaleVec());
 
-            pos -= coord;
-            pos = MathHelper.floor(pos) + 0.5;
-            pos += coord;
+            pos -= scale;
+            pos = MathHelper.floor(pos);
+            pos += scale;
 
             return pos;
         }
@@ -31,22 +26,22 @@ public abstract class ScaleSnapping {
     RELATIVE_FULL_BLOCK = new ScaleSnapping("Relative 1.0") {
         @Override
         public double snap(PosScaled scaled, ToolAxis axis, double pos) {
-            double coord = axis.getCoordFromUnit(scaled.getPos());
+            double scale = axis.getValueFromUnit(scaled.scaleVec());
 
-            pos -= coord;
+            pos -= scale;
             pos = (int) Math.round(pos / 2) * 2;
-            pos += coord;
+            pos += scale;
 
             return pos;
         }
     },
-    HALF_BLOCK = new ScaleSnapping("Block 0.5") {
+    HALF_BLOCK = new ScaleSnapping("Total 0.5") {
         @Override
         public double snap(PosScaled scaled, ToolAxis axis, double pos) {
             return MathHelper.floor(pos);
         }
     },
-    FULL_BLOCK = new ScaleSnapping("Block 1.0") {
+    FULL_BLOCK = new ScaleSnapping("Total 1.0") {
         @Override
         public double snap(PosScaled scaled, ToolAxis axis, double pos) {
             return (int) Math.round(pos / 2) * 2;
