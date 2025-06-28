@@ -34,7 +34,8 @@ public class FIMModClient implements ClientModInitializer {
                 new RotateToolKeybind(),
                 new QuickActionsKeybind(),
                 new PreviousSnappingKeybind(),
-                new NextSnappingKeybind()
+                new NextSnappingKeybind(),
+                new ScaleToolKeybind()
         ));
 
         ToolRenderingManager.get();

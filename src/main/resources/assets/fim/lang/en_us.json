@@ -6,6 +6,7 @@
   "keybind.fim.confirm_edit": "Confirm Edit",
   "keybind.fim.move_tool": "Toggle Move Tool",
   "keybind.fim.rotate_tool": "Toggle Rotate Tool",
+  "keybind.fim.scale_tool": "Toggle Scale Tool",
   "keybind.fim.quick_actions": "Open Quick Actions",
   "keybind.fim.snapping_previous": "Previous Snapping",
   "keybind.fim.snapping_next": "Next Snapping"

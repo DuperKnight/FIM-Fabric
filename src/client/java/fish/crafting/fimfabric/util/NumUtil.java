@@ -1,5 +1,7 @@
 package fish.crafting.fimfabric.util;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -45,6 +47,14 @@ public class NumUtil {
      */
     public static String betterNumber(Number number) {
         return NumberFormat.getInstance(Locale.US).format(number);
+    }
+
+    /**
+     * NOTE: Breaks if 10^decimals * number is over long limit :pp
+     */
+    public static String withNDecimals(double number, int decimals){
+        double m = Math.pow(10, decimals);
+        return (long) (number * m) / m + "";
     }
 
     private static final DecimalFormat FORMAT_JAVA = new DecimalFormat("#.##");

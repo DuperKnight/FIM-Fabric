@@ -1,7 +1,10 @@
 package fish.crafting.fimfabric.rendering.custom;
 
+import fish.crafting.fimfabric.util.ColorUtil;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+
+import java.awt.*;
 
 public interface RenderContext3D {
 
@@ -33,6 +36,20 @@ public interface RenderContext3D {
     void renderFilledBox(double minX, double minY, double minZ,
                          double maxX, double maxY, double maxZ,
                          float red, float green, float blue, float alpha);
+
+    default void renderFilledBox(double minX, double minY, double minZ,
+                                 double maxX, double maxY, double maxZ,
+                                 int color) {
+
+
+        renderFilledBox(
+                minX, minY, minZ, maxX, maxY, maxZ,
+                ColorUtil.getRed(color) / 255f,
+                ColorUtil.getGreen(color) / 255f,
+                ColorUtil.getBlue(color) / 255f,
+                ColorUtil.getAlpha(color) / 255f
+        );
+    }
 
     default void renderBoxOutline(Box box, float red, float green, float blue, float alpha) {
         renderBoxOutline(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha);

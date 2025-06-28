@@ -3,6 +3,7 @@ package fish.crafting.fimfabric.ui.actions;
 import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.PosRotated;
+import fish.crafting.fimfabric.tools.PosScaled;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.InterfaceManager;
@@ -181,6 +182,11 @@ public abstract class ActionElement extends UIBox {
 
         UpdateStrategy ACTIVE_IF_EDITING_POSROT = element -> {
             element.active = ToolManager.get().getEditing() instanceof PosRotated;
+            element.visible = true;
+        };
+
+        UpdateStrategy ACTIVE_IF_EDITING_POSSCALE = element -> {
+            element.active = ToolManager.get().getEditing() instanceof PosScaled;
             element.visible = true;
         };
 

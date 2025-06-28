@@ -13,6 +13,7 @@ public class TexRegistry {
     TOOL_SCALE = ui("tools/scale"),
     VECTOR = ui("vector"),
     LOCATION = ui("location"),
+    BOUNDING_BOX = ui("boundingbox"),
     COORDINATES = ui("coordinates"),
     FEED_QUESTION = ui("feed/question"),
     FEED_WARN = ui("feed/warn"),

@@ -29,6 +29,10 @@ public class FancyText {
         return of(name, TexRegistry.LOCATION);
     }
 
+    public static FancyText boundingBox(@NotNull String name){
+        return of(name, TexRegistry.BOUNDING_BOX);
+    }
+
     public static FancyText of(@NotNull String name) {
         return new FancyText(name, null);
     }

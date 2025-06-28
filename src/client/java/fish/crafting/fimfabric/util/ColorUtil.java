@@ -31,6 +31,22 @@ public class ColorUtil {
         return (color & 0xFFFFFF00) | (blue);
     }
 
+    public static int getRed(int color) {
+        return (color >> 16) & 0xFF;
+    }
+
+    public static int getGreen(int color) {
+        return (color >> 8) & 0xFF;
+    }
+
+    public static int getBlue(int color) {
+        return (color >> 0) & 0xFF;
+    }
+
+    public static int getAlpha(int color) {
+        return (color >> 24) & 0xff;
+    }
+
     public static int mix(int colorA, int colorB, float ratio){
         float iRatio = 1.0f - ratio;
 

@@ -12,6 +12,7 @@ public class EditorTools {
 
     public static MoveTool MOVE = register(0, new MoveTool());
     public static RotateTool ROTATE = register(1, new RotateTool());
+    public static ScaleTool SCALE = register(2, new ScaleTool());
 
     private static <T extends CustomTool<?>> T register(int id, T tool){
         tools.put(id, tool);

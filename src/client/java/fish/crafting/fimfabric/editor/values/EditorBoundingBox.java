@@ -10,7 +10,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
-public class EditorBoundingBox implements Referenced, Positioned {
+public class EditorBoundingBox implements Referenced, PosScaled {
 
     public Vec3d min, max;
 
@@ -99,6 +99,32 @@ public class EditorBoundingBox implements Referenced, Positioned {
         return reference;
     }
 
+    @Override
+    public double scaleX() {
+        return xLength();
+    }
+
+    @Override
+    public double scaleY() {
+        return yLength();
+    }
+
+    @Override
+    public double scaleZ() {
+        return zLength();
+    }
+
+    @Override
+    public void setScale(double x, double y, double z) {
+        setValues(
+                center.x - x / 2.0,
+                center.y - y / 2.0,
+                center.z - z / 2.0,
+                center.x + x / 2.0,
+                center.y + y / 2.0,
+                center.z + z / 2.0);
+    }
+
     private class Selector extends WorldSelector {
 
         @Override
@@ -115,6 +141,8 @@ public class EditorBoundingBox implements Referenced, Positioned {
             if(ToolManager.get().getEditing() != EditorBoundingBox.this) return;
             if(ToolManager.get().getSelectedTool() instanceof MoveTool moveTool){
                 moveTool.vectorClickCallback(EditorBoundingBox.this, press);
+            }else if(ToolManager.get().getSelectedTool() instanceof ScaleTool scaleTool){
+                scaleTool.vectorClickCallback(EditorBoundingBox.this, press);
             }
         }
 
