@@ -118,8 +118,8 @@ public class CursorPicking {
     private static double[] convert(Matrix4f V, Matrix4f P, double _x, double _y) {
         int i = WindowUtil.guiScale();
 
-        int width = WindowUtil.width();
-        int height = WindowUtil.height();
+        int width = WindowUtil.normalWidth();
+        int height = WindowUtil.normalHeight();
 
         var mx = -2 * (_x / width - .5) / get(P, 0);
         var my = 2 * (_y / height - .5) / get(P, 5);
