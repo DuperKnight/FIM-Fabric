@@ -2,8 +2,8 @@ package fish.crafting.fimfabric.tools;
 
 import fish.crafting.fimfabric.connection.packets.F2IDoLocationEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
-import fish.crafting.fimfabric.editor.vector.EditorLocation;
-import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.editor.values.EditorLocation;
+import fish.crafting.fimfabric.editor.values.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;

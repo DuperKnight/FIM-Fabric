@@ -3,10 +3,12 @@ package fish.crafting.fimfabric.rendering.world;
 import fish.crafting.fimfabric.client.FIMModClient;
 import fish.crafting.fimfabric.editor.EditorReference;
 import fish.crafting.fimfabric.editor.Referenced;
-import fish.crafting.fimfabric.editor.vector.EditorLocation;
-import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.editor.values.EditorBoundingBox;
+import fish.crafting.fimfabric.editor.values.EditorLocation;
+import fish.crafting.fimfabric.editor.values.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.ImplRenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
+import fish.crafting.fimfabric.settings.BoundingBoxSettings;
 import fish.crafting.fimfabric.settings.VectorSettings;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
@@ -19,6 +21,7 @@ import fish.crafting.fimfabric.ui.actions.BlockPosActionElement;
 import fish.crafting.fimfabric.ui.custom.blockactions.UIBlockActions;
 import fish.crafting.fimfabric.util.CursorPicking;
 import fish.crafting.fimfabric.util.DebugSettings;
+import fish.crafting.fimfabric.util.VectorUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -71,6 +74,7 @@ public class WorldRenderingManager {
             switch (editing) {
                 case EditorVector vector -> renderVector(context, vector);
                 case EditorLocation location -> renderLocation(context, location);
+                case EditorBoundingBox box -> renderBoundingBox(context, box);
                 default -> {}
             }
         }
@@ -123,6 +127,64 @@ public class WorldRenderingManager {
         }
     }
 
+    public void renderBoundingBox(@NotNull RenderContext3D context,
+                                  @NotNull EditorBoundingBox boundingBox){
+        if(boundingBox.lastRenderFrame == RENDER_FRAME) return;
+        boundingBox.lastRenderFrame = RENDER_FRAME;
+
+        context.push();
+        context.translateCamera();
+        context.setLineWidth(3f);
+
+        double d = BoundingBoxSettings.renderSize();
+
+        Vec3d pos = boundingBox.center;
+
+        float r = 1f;
+        float g = 136f / 255f;
+        float b = 25f / 255f;
+
+        WorldSelector activeSelector = WorldSelectorManager.get().getMainActiveSelector();
+        if(activeSelector != null && activeSelector == boundingBox.selector()){
+            g = b = 1f;
+        }
+
+        //small box
+        context.renderFilledBox(
+                pos.x - d, pos.y - d, pos.z - d,
+                pos.x + d, pos.y + d, pos.z + d,
+                1f, 1f, 1f, 0.3f);
+
+        //actual bounding box
+        Vec3d min = boundingBox.min;
+        Vec3d max = boundingBox.max;
+
+        context.renderFilledBox(
+                min.x, min.y, min.z,
+                max.x, max.y, max.z,
+                r, g, b, 0.2f
+        );
+
+        context.renderBoxOutline(
+                min.x, min.y, min.z,
+                max.x, max.y, max.z,
+                r, g, b, 1f
+        );
+
+        //render block outline
+        Vec3d minBlock = VectorUtils.toBlockPos(min);
+        Vec3d maxBlock = VectorUtils.toBlockPos(max);
+        context.setLineWidth(1f);
+
+        context.renderBoxOutline(
+                minBlock.x, minBlock.y, minBlock.z,
+                maxBlock.x + 1, maxBlock.y + 1, maxBlock.z + 1,
+                1f, 1f, 1f, 0.5f
+        );
+
+        context.pop();
+    }
+
     public void renderLocation(@NotNull RenderContext3D context,
                                @NotNull EditorLocation location){
         if(location.lastRenderFrame == RENDER_FRAME) return;
@@ -137,8 +199,8 @@ public class WorldRenderingManager {
         Vec3d pos = location.vector;
 
         float r = 1f;
-        float g = 173f / 255f;
-        float b = 58f / 255f;
+        float g = 0f;
+        float b = 66f / 255f;
 
         WorldSelector activeSelector = WorldSelectorManager.get().getMainActiveSelector();
         if(activeSelector != null && activeSelector == location.selector()){

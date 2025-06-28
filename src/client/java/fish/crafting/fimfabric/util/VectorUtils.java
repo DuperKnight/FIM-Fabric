@@ -105,4 +105,12 @@ public class VectorUtils {
     public static String toString(BlockPos pos){
         return toString(new Vec3d(pos));
     }
+
+    public static Vec3d toBlockPos(Vec3d vec3d) {
+        return new Vec3d(
+                MathHelper.floor(vec3d.x),
+                MathHelper.floor(vec3d.y),
+                MathHelper.floor(vec3d.z)
+        );
+    }
 }

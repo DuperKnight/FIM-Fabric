@@ -2,8 +2,8 @@ package fish.crafting.fimfabric.tools;
 
 import fish.crafting.fimfabric.connection.packets.F2IDoLocationEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
-import fish.crafting.fimfabric.editor.vector.EditorLocation;
-import fish.crafting.fimfabric.editor.vector.EditorVector;
+import fish.crafting.fimfabric.editor.values.EditorLocation;
+import fish.crafting.fimfabric.editor.values.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
@@ -17,7 +17,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -52,6 +51,7 @@ public class MoveTool extends CustomTool<Positioned> {
     private Double editingCoordOffset = null;
     private ToolAxis editingAxis = null;
     private final FadeTracker fadingText = new FadeTracker(0, 0.3, 0.1);
+    private static final FadeTracker snapTextFade = new FadeTracker(0, 0.1, 0.3);
     private Vec3d startPos = null;
     private Positioned lastRendered = null;
 
@@ -152,6 +152,15 @@ public class MoveTool extends CustomTool<Positioned> {
                     WindowUtil.scaledWidth() / 2,
                     windowHeight * 3 / 4,
                     clr
+            );
+        }
+
+        if(snapTextFade.isActive()){
+            context.drawCenteredTextWithShadow(
+                    "Snapping: " + SNAPPING.getName(),
+                    WindowUtil.scaledWidth() / 2,
+                    WindowUtil.scaledHeight() / 2 - 30,
+                    snapTextFade.color(0xFFFFFFFF)
             );
         }
 
@@ -526,6 +535,8 @@ public class MoveTool extends CustomTool<Positioned> {
         SNAPPING.fade.fadeOut();
         SNAPPING = ALL_SNAPPINGS[SNAPPING_INDEX];
         SNAPPING.fade.fadeIn();
+
+        snapTextFade.begin();
     }
 
     @Override

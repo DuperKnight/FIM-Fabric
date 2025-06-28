@@ -35,6 +35,7 @@ public class ImplRenderContext3D implements RenderContext3D {
                     .withLocation("debug_filled_box")
                     .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.TRIANGLE_STRIP)
                     .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+                    .withDepthWrite(true)
                     .build());
 
     private static final Map<Float, RenderLayer.MultiPhase> LINE_WIDTH_TRACKER = new HashMap<>();

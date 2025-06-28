@@ -2,6 +2,8 @@ package fish.crafting.fimfabric.ui.actions;
 
 import fish.crafting.fimfabric.connection.ConnectionManager;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
+import fish.crafting.fimfabric.tools.PosRotated;
+import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.InterfaceManager;
 import fish.crafting.fimfabric.ui.UIBox;
@@ -17,6 +19,7 @@ import net.minecraft.client.font.TextRenderer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import static fish.crafting.fimfabric.ui.actions.ActionElement.UpdateStrategy.ALWAYS;
 
@@ -170,6 +173,17 @@ public abstract class ActionElement extends UIBox {
                 element.visible = false;
             }
         };
+
+        UpdateStrategy ACTIVE_IF_EDITING_ANY = element -> {
+            element.active = ToolManager.get().getEditing() != null;
+            element.visible = true;
+        };
+
+        UpdateStrategy ACTIVE_IF_EDITING_POSROT = element -> {
+            element.active = ToolManager.get().getEditing() instanceof PosRotated;
+            element.visible = true;
+        };
+
 
     }
 }

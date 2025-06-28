@@ -2,7 +2,7 @@ package fish.crafting.fimfabric.connection.packets;
 
 import fish.crafting.fimfabric.connection.packetsystem.OutPacket;
 import fish.crafting.fimfabric.connection.packetsystem.PacketId;
-import fish.crafting.fimfabric.editor.vector.EditorLocation;
+import fish.crafting.fimfabric.editor.values.EditorLocation;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.util.math.Vec3d;
 
