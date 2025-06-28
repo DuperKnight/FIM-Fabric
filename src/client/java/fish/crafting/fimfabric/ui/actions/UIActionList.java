@@ -123,11 +123,9 @@ public class UIActionList extends UIComponent {
     }
 
     public void showListAtMouse(boolean returnToGameScreenAfter){
-        int i = WindowUtil.guiScale();
-
         showList(
-                MouseUtil.xInt() / i,
-                MouseUtil.yInt() / i,
+                MouseUtil.scaledXInt(),
+                MouseUtil.scaledYInt(),
                 returnToGameScreenAfter
         );
     }

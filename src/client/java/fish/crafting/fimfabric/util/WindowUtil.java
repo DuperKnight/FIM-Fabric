@@ -4,14 +4,6 @@ import net.minecraft.client.MinecraftClient;
 
 public class WindowUtil {
 
-    public static int width(){
-        return MinecraftClient.getInstance().getWindow().getFramebufferWidth();
-    }
-
-    public static int height(){
-        return MinecraftClient.getInstance().getWindow().getFramebufferHeight();
-    }
-
     public static int scaledWidth(){
         return MinecraftClient.getInstance().getWindow().getScaledWidth();
     }
