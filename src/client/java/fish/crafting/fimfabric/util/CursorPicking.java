@@ -4,6 +4,7 @@ import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.util.cache.RenderFrameCache;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.render.Camera;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -78,7 +79,10 @@ public class CursorPicking {
     }
 
     public static boolean areBlockPickingPrerequisitesMet(){
-        return KeyUtil.isControlPressed() && !MinecraftClient.getInstance().mouse.isCursorLocked();
+        MinecraftClient client = MinecraftClient.getInstance();
+        return KeyUtil.isControlPressed() &&
+                !client.mouse.isCursorLocked() &&
+                client.currentScreen instanceof ChatScreen;
     }
 
     public static BlockHitResult raycast(){
