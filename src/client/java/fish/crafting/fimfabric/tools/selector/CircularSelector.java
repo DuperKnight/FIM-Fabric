@@ -1,4 +1,4 @@
-package fish.crafting.fimfabric.tools.worldselector;
+package fish.crafting.fimfabric.tools.selector;
 
 import fish.crafting.fimfabric.util.VectorUtils;
 import net.minecraft.util.math.Box;

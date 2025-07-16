@@ -1,7 +1,7 @@
 package fish.crafting.fimfabric.mixin;
 
 import fish.crafting.fimfabric.tools.ToolManager;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
+import fish.crafting.fimfabric.tools.selector.WorldSelectorManager;
 import fish.crafting.fimfabric.ui.InterfaceManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;

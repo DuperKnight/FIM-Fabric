@@ -96,7 +96,7 @@ public class CursorPicking {
 
             ShapeContext context = (client.player == null ? ShapeContext.absent() : ShapeContext.of(client.player));
 
-            Vec3d vec2 = vec1.add(x * dist, y * dist, z * dist);
+            Vec3d vec2 = createEndPoint(dist);
 
             var fluidHandling = RaycastContext.FluidHandling.NONE;
             var shapeType = RaycastContext.ShapeType.COLLIDER;
@@ -109,6 +109,10 @@ public class CursorPicking {
 
             return client.world.raycast(new RaycastContext(vec1, vec2, shapeType, fluidHandling, context));
         });
+    }
+
+    public static Vec3d createEndPoint(double dist){
+        return vec1.add(x * dist, y * dist, z * dist);
     }
 
     /**

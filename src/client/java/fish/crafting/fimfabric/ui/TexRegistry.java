@@ -14,6 +14,7 @@ public class TexRegistry {
     VECTOR = ui("vector"),
     LOCATION = ui("location"),
     BOUNDING_BOX = ui("boundingbox"),
+    TELEPORT = ui("teleport"),
     COORDINATES = ui("coordinates"),
     FEED_QUESTION = ui("feed/question"),
     FEED_WARN = ui("feed/warn"),

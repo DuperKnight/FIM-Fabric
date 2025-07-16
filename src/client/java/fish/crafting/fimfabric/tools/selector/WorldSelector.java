@@ -1,4 +1,4 @@
-package fish.crafting.fimfabric.tools.worldselector;
+package fish.crafting.fimfabric.tools.selector;
 
 import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
-import static fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager.LAST_RENDER_FRAME;
+import static fish.crafting.fimfabric.tools.selector.WorldSelectorManager.LAST_RENDER_FRAME;
 
 public abstract class WorldSelector {
 
@@ -28,6 +28,10 @@ public abstract class WorldSelector {
         }else{
             onDisabled();
         }
+    }
+
+    public boolean canBeSelectedInCamera(){
+        return true;
     }
 
     public final void handlePress(int button, int mods){

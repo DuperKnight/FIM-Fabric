@@ -6,7 +6,7 @@ import fish.crafting.fimfabric.settings.VectorSettings;
 import fish.crafting.fimfabric.tools.MoveTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
+import fish.crafting.fimfabric.tools.selector.WorldSelector;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;

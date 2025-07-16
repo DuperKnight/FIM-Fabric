@@ -7,7 +7,7 @@ import fish.crafting.fimfabric.tools.MoveTool;
 import fish.crafting.fimfabric.tools.PosRotated;
 import fish.crafting.fimfabric.tools.RotateTool;
 import fish.crafting.fimfabric.tools.ToolManager;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
+import fish.crafting.fimfabric.tools.selector.WorldSelector;
 import fish.crafting.fimfabric.util.VectorUtils;
 import lombok.Getter;
 import net.minecraft.util.math.Box;

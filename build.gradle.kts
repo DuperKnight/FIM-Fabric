@@ -93,6 +93,7 @@ dependencies {
         12104 -> "1.21.4+build.8"
         12105 -> "1.21.5+build.1"
         12106 -> "1.21.6+build.1"
+        12107 -> "1.21.7+build.1"
         else -> error("No mappings defined for ${modPlatform.mcVersion}")
     }
 
@@ -100,6 +101,7 @@ dependencies {
         12104 -> "0.119.2+1.21.4"
         12105 -> "0.128.0+1.21.5"
         12106 -> "0.128.0+1.21.6"
+        12107 -> "0.128.2+1.21.7"
         else -> error("No API version defined for ${modPlatform.mcVersion}")
     }
 
@@ -119,7 +121,7 @@ dependencies {
 val supportedVersionRange: Pair<String, String?> = when (modPlatform.mcVersion) {
     12104 -> "1.21.4" to "1.21.4"
     12105 -> "1.21.5" to "1.21.5"
-    12106 -> "1.21.6" to "1.21.6"
+    12106 -> "1.21.6" to "1.21.7"
     else -> error("Undefined version range for ${modPlatform.mcVersion}")
 }
 
@@ -144,7 +146,7 @@ tasks {
     processResources {
         val properties = mapOf(
             "version" to mod_version,
-            "minecraft_version" to minecraft_version,
+            "minecraft_version" to fabricMcVersionRange,
             "loader_version" to loader_version
         )
 

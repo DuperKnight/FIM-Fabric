@@ -1,10 +1,12 @@
-package fish.crafting.fimfabric.tools.worldselector;
+package fish.crafting.fimfabric.tools.selector;
 
+import fish.crafting.fimfabric.editor.values.EditorBoundingBox;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.world.WorldRenderingManager;
 import fish.crafting.fimfabric.tools.CustomTool;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
+import fish.crafting.fimfabric.util.CursorPicking;
 import fish.crafting.fimfabric.util.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -51,12 +53,39 @@ public class WorldSelectorManager {
         Positioned editing = ToolManager.get().getEditing();
         if(editing != null) {
             editing.selector().update();
+
+            if(editing instanceof EditorBoundingBox box){
+                box.handleSelectorUpdate();
+            }
         }
     }
 
-    public void updateHover(){
+    private ScreenSelector getHoveredScreen(){
+        Vec3d from = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
+        Vec3d to = CursorPicking.createEndPoint(1000);
+
+        Double lowestDistance = null;
+        ScreenSelector hovered = null;
+
+        for (WorldSelector activeSelector : activeSelectors) {
+            if(!(activeSelector instanceof ScreenSelector selector)) continue;
+
+            Vec3d raycast = selector.raycast(from, to);
+            if(raycast == null) continue;
+
+            double d = raycast.squaredDistanceTo(from);
+            if(lowestDistance == null || d < lowestDistance) {
+                lowestDistance = d;
+                hovered = selector;
+            }
+        }
+
+        return hovered;
+    }
+
+    private WorldSelector getHoveredWorld(){
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if(player == null) return;
+        if(player == null) return null;
 
         float tickDelta = RenderUtils.tickDelta();
         Vec3d camera = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
@@ -68,6 +97,8 @@ public class WorldSelectorManager {
         WorldSelector hovered = null;
 
         for (WorldSelector selector : activeSelectors) {
+            if(!selector.canBeSelectedInCamera()) continue;
+
             Vec3d raycast = selector.raycast(vec3d, vec3d2);
             if(raycast == null) continue;
 
@@ -76,6 +107,20 @@ public class WorldSelectorManager {
                 lowestDistance = d;
                 hovered = selector;
             }
+        }
+
+        return hovered;
+    }
+
+    public void updateHover(){
+        WorldSelector hovered = null;
+        if(!MinecraftClient.getInstance().mouse.isCursorLocked()){
+            hovered = getHoveredScreen();
+        }
+
+        //Didn't hit anything on screenspace, get from world
+        if(hovered == null){
+            hovered = getHoveredWorld();
         }
 
         if(this.hovered == hovered) return;

@@ -5,13 +5,11 @@ import fish.crafting.fimfabric.tools.PosScaled;
 import fish.crafting.fimfabric.tools.Positioned;
 import fish.crafting.fimfabric.tools.ToolManager;
 import fish.crafting.fimfabric.ui.FancyText;
+import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.ui.actions.ActionElement;
 import fish.crafting.fimfabric.ui.actions.BlockPosActionElement;
 import fish.crafting.fimfabric.ui.actions.UIActionList;
-import fish.crafting.fimfabric.util.ActionUtils;
-import fish.crafting.fimfabric.util.ClickContext;
-import fish.crafting.fimfabric.util.SoundUtil;
-import fish.crafting.fimfabric.util.VectorUtils;
+import fish.crafting.fimfabric.util.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityPose;
@@ -23,12 +21,35 @@ public class ToolActions extends UIActionList {
     public ToolActions(int width) {
         super(width);
 
+        addElement(new TeleportToCenter());
         addElement(new MoveToPlayer());
         addElement(new CenterPos());
         addSeparator();
         addElement(new MoveToPlayerLooking());
         addSeparator();
         addElement(new SetBoxTo111());
+    }
+
+    private static class TeleportToCenter extends ActionElement {
+        public TeleportToCenter() {
+            super(FancyText.of("Teleport to Center", TexRegistry.TELEPORT));
+            setUpdateStrategy(UpdateStrategy.ACTIVE_IF_EDITING_ANY);
+        }
+
+        @Override
+        protected void activate(ClickContext context) {
+            MinecraftClient instance = MinecraftClient.getInstance();
+            ClientPlayerEntity player = instance.player;
+            if(player == null) return;
+
+            Positioned editing = ToolManager.get().getEditing();
+            if(editing == null) return;
+
+            Vec3d pos = editing.getPos();
+            PlayerUtil.teleportTo(pos.x, pos.y, pos.z);
+
+            SoundUtil.clickSound();
+        }
     }
 
     private static class MoveToPlayer extends ActionElement {

@@ -3,9 +3,10 @@ package fish.crafting.fimfabric.editor.values;
 import fish.crafting.fimfabric.editor.EditorReference;
 import fish.crafting.fimfabric.editor.Referenced;
 import fish.crafting.fimfabric.settings.BoundingBoxSettings;
-import fish.crafting.fimfabric.settings.VectorSettings;
 import fish.crafting.fimfabric.tools.*;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
+import fish.crafting.fimfabric.tools.selector.ScreenSelector;
+import fish.crafting.fimfabric.tools.selector.WorldSelector;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +21,13 @@ public class EditorBoundingBox implements Referenced, PosScaled {
     private @NotNull Box renderBox = new Box(0, 0, 0, 0, 0, 0);
     private final EditorReference reference = new EditorReference();
     public int lastRenderFrame = 0;
+    private final StretchSelector[] edgeSelectors = new StretchSelector[12];
 
     public EditorBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2){
+        for (int i = 0; i < edgeSelectors.length; i++) {
+            edgeSelectors[i] = new StretchSelector();
+        }
+
         setValues(x1, y1, z1, x2, y2, z2);
     }
 
@@ -36,7 +42,53 @@ public class EditorBoundingBox implements Referenced, PosScaled {
                 Math.max(y1, y2),
                 Math.max(z1, z2));
 
+        updateEdges();
         updateCenter();
+    }
+
+    private void updateEdges(){
+        int i = 0;
+        for (Pair<Vec3d, Vec3d> edge : getEdges()) {
+            edgeSelectors[i++].update(edge.getLeft(), edge.getRight());
+        }
+    }
+
+    public Pair<Vec3d, Vec3d>[] getEdges(){
+        Pair<Vec3d, Vec3d>[] edges = new Pair[12];
+
+        double x = min.x;
+        double y = min.y;
+        double z = min.z;
+        double x2 = max.x;
+        double y2 = max.y;
+        double z2 = max.z;
+
+        edges[0] = createXEdge(x, x2, y, z);
+        edges[1] = createXEdge(x, x2, y2, z);
+        edges[2] = createXEdge(x, x2, y, z2);
+        edges[3] = createXEdge(x, x2, y2, z2);
+
+        edges[4] = createYEdge(x, y, y2, z);
+        edges[5] = createYEdge(x2, y, y2, z);
+        edges[6] = createYEdge(x, y, y2, z2);
+        edges[7] = createYEdge(x2, y, y2, z2);
+
+        edges[8] = createZEdge(x, y, z, z2);
+        edges[9] = createZEdge(x2, y, z, z2);
+        edges[10] = createZEdge(x, y2, z, z2);
+        edges[11] = createZEdge(x2, y2, z, z2);
+
+        return edges;
+    }
+
+    private static Pair<Vec3d, Vec3d> createXEdge(double x1, double x2, double y, double z){
+        return new Pair<>(new Vec3d(x1, y, z), new Vec3d(x2, y, z));
+    }
+    private static Pair<Vec3d, Vec3d> createYEdge(double x, double y1, double y2, double z){
+        return new Pair<>(new Vec3d(x, y1, z), new Vec3d(x, y2, z));
+    }
+    private static Pair<Vec3d, Vec3d> createZEdge(double x, double y, double z1, double z2){
+        return new Pair<>(new Vec3d(x, y, z1), new Vec3d(x, y, z2));
     }
 
     public void updateCenter(){
@@ -123,6 +175,41 @@ public class EditorBoundingBox implements Referenced, PosScaled {
                 center.x + x / 2.0,
                 center.y + y / 2.0,
                 center.z + z / 2.0);
+    }
+
+    public void handleSelectorUpdate() {
+
+    }
+
+    private static class StretchSelector extends ScreenSelector {
+
+        private Box box = new Box(0, 0, 0, 0, 0, 0);
+
+        private void update(Vec3d vec1, Vec3d vec2){
+            double x1 = vec1.x;
+            double y1 = vec1.y;
+            double z1 = vec1.z;
+            double x2 = vec2.x;
+            double y2 = vec2.y;
+            double z2 = vec2.z;
+
+            double d = 0.05;
+            //Adjust so they don't stick out, yes i know its janky but idc
+            if(x1 != x2) {
+                x1 += d; x2 -= d;
+            }else if(y1 != y2){
+                y1 += d; y2 -= d;
+            }else if(z1 != z2){
+                z1 += d; z2 -= d;
+            }
+
+            box = new Box(x1 - d, y1 - d, z1 - d, x2 + d, y2 + d, z2 + d);
+        }
+
+        @Override
+        public Box getBox() {
+            return box;
+        }
     }
 
     private class Selector extends WorldSelector {

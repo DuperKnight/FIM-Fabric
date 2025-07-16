@@ -1,15 +1,17 @@
 package fish.crafting.fimfabric.tools;
 
+import fish.crafting.fimfabric.connection.packets.F2IDoBoundingBoxEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoLocationEditPacket;
 import fish.crafting.fimfabric.connection.packets.F2IDoVectorEditPacket;
+import fish.crafting.fimfabric.editor.values.EditorBoundingBox;
 import fish.crafting.fimfabric.editor.values.EditorLocation;
 import fish.crafting.fimfabric.editor.values.EditorVector;
 import fish.crafting.fimfabric.rendering.custom.RenderContext3D;
 import fish.crafting.fimfabric.rendering.custom.ScreenRenderContext;
 import fish.crafting.fimfabric.tools.render.ToolAxis;
 import fish.crafting.fimfabric.tools.snapping.ScaleSnapping;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelector;
-import fish.crafting.fimfabric.tools.worldselector.WorldSelectorManager;
+import fish.crafting.fimfabric.tools.selector.WorldSelector;
+import fish.crafting.fimfabric.tools.selector.WorldSelectorManager;
 import fish.crafting.fimfabric.ui.TexRegistry;
 import fish.crafting.fimfabric.util.*;
 import fish.crafting.fimfabric.util.render.FadeTracker;
@@ -511,6 +513,7 @@ public class ScaleTool extends CustomTool<PosScaled> {
         switch (positioned) {
             case EditorVector vector -> new F2IDoVectorEditPacket(vector).send();
             case EditorLocation location -> new F2IDoLocationEditPacket(location).send();
+            case EditorBoundingBox boundingBox -> new F2IDoBoundingBoxEditPacket(boundingBox).send();
             default -> {}
         }
 
