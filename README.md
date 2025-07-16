@@ -32,7 +32,7 @@ _IntelliJ is not required in order to use Minecraft-only features of the mod!_
 
 ## ✨ Main Feature List
 
-- Fast Vector/Location accessing & editing
+- Fast Vector/Location/BoundingBox accessing & editing
 - Minecraft world utilities
     - Quick block copying (Location, Center, Blockstate...)
 - Shortcut for quick swapping between IntelliJ & Minecraft
@@ -41,7 +41,6 @@ Feel free to leave your suggestions in our [Discord Server](https://discord.craf
 
 ## 🔜 Planned Features
 
-- BoundingBox support
 - Entity & Player world utilities (Copying UUIDs, Positions, etc.)
 - Customizable IntelliJ trigger classes for projects
 - Viewing Vectors/Locations from classes in Minecraft automatically
