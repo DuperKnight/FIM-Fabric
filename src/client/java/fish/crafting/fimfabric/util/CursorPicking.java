@@ -80,6 +80,9 @@ public class CursorPicking {
 
     public static boolean areBlockPickingPrerequisitesMet(){
         MinecraftClient client = MinecraftClient.getInstance();
+        if(client.player == null) return false;
+        if(client.player.isSleeping()) return false;
+
         return KeyUtil.isControlPressed() &&
                 !client.mouse.isCursorLocked() &&
                 client.currentScreen instanceof ChatScreen;
