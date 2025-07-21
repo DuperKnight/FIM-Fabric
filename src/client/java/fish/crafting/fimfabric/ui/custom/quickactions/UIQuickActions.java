@@ -12,6 +12,7 @@ public class UIQuickActions extends UIActionList {
 
         title(FancyText.of("Quick Actions"));
         addExpandElement(FancyText.vector("Vectors"), () -> new VectorActions(WIDTH_MEDIUM));
+        addExpandElement(FancyText.location("Locations"), () -> new LocationActions(UIActionList.WIDTH_LARGE));
 
         ExpandActionElement tools = addExpandElement(FancyText.of("Tools", TexRegistry.TOOL_MOVE), () -> new ToolActions(WIDTH_MEDIUM));
         tools.setUpdateStrategy(ActionElement.UpdateStrategy.ACTIVE_IF_EDITING_ANY);
