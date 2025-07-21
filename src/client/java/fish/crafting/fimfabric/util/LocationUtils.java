@@ -23,7 +23,7 @@ public class LocationUtils {
         if(registryKey == null) return null;
 
         Identifier identifier = registryKey.getValue();
-        if(identifier.getPath().equals("minecraft")) return identifier.getNamespace();
+        if(identifier.getNamespace().equals("minecraft")) return identifier.getPath();
 
         //modded:world_name
         return identifier.toString();

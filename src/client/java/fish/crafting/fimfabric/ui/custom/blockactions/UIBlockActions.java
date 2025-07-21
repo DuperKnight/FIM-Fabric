@@ -4,6 +4,7 @@ import fish.crafting.fimfabric.ui.FancyText;
 import fish.crafting.fimfabric.ui.actions.UIActionList;
 import fish.crafting.fimfabric.util.ActionUtils;
 import fish.crafting.fimfabric.util.CursorPicking;
+import fish.crafting.fimfabric.util.LocationUtils;
 import fish.crafting.fimfabric.util.VectorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -40,6 +41,18 @@ public class UIBlockActions extends UIActionList {
         addRunElement(FancyText.coords("Copy Corner Coordinates"), ctx -> {
             Vec3d pos = new Vec3d(storedRayBlockPos);
             ActionUtils.copyIfClick(ctx, () -> VectorUtils.toCoordsString(pos));
+        });
+
+        addSeparator();
+
+        addRunElement(FancyText.location("Copy Center Location"), ctx -> {
+            Vec3d pos = storedRayBlockPos.toCenterPos();
+            ActionUtils.copyIfClick(ctx, () -> LocationUtils.toCoordsString(pos));
+        });
+
+        addRunElement(FancyText.location("Copy Corner Location"), ctx -> {
+            Vec3d pos = new Vec3d(storedRayBlockPos);
+            ActionUtils.copyIfClick(ctx, () -> LocationUtils.toCoordsString(pos));
         });
 
         addSeparator();
